@@ -1,0 +1,49 @@
+{
+  "KEY_FIELDS": {
+    "Trust_Name": "string",
+    "Grantor_Settlor_Trustor": ["string"],
+    "Trustees": {
+      "Initial_Trustees": ["string"],
+      "Successor_Trustee_Provisions": "string"
+    },
+    "Beneficiaries": {
+      "Primary": ["string"],
+      "Contingent": ["string"]
+    },
+    "Effective_Date": "string",
+    "Trust_Type": "string",
+    "Trust_Purpose": "string"
+  },
+  "SUMMARY_PARAGRAPHS": {
+    "Trust_Structure_And_Purpose": "paragraph",
+    "Distribution_Provisions": "paragraph",
+    "Trustee_Powers_And_Duties": "paragraph",
+    "Beneficiary_Provisions": "paragraph",
+    "Amendment_And_Termination": "paragraph",
+    "Special_Provisions": "paragraph"
+  },
+  "DETAILS": {
+    "Situs_Trust_Location": "string",
+    "Governing_Law": "string",
+    "Duration_RAP": "string",
+    "GST_Tax_Planning": "string",
+    "Tax_ID_EIN_Requirements": "string",
+    "Spendthrift_Provisions": {
+      "Present": "yes_no_unknown",
+      "Description": "string"
+    },
+    "No_Contest_In_Terrorem": "yes_no_unknown",
+    "Trust_Protector": {
+      "Present": "yes_no_unknown",
+      "Name": "string",
+      "Powers": "string"
+    },
+    "Accounting_Requirements": "string",
+    "Bond_Requirements_for_Trustee": "string",
+    "Trustee_Compensation": "string",
+    "Definition_of_Incapacity": "string",
+    "Specific_Asset_Dispositions": ["string"],
+    "Charitable_Provisions": "string",
+    "Pet_Trust_Provisions": "string"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "params": {
+    "return_format": "json",
+    "granularity": "paragraph",
+    "focus": [
+      "trust structure and purpose",
+      "trustee powers and limitations",
+      "distribution triggers and ages",
+      "beneficiary protections",
+      "amend/terminate mechanics",
+      "unique clauses"
+    ],
+    "fact_mode": true,
+    "include_citations": "inline",
+    "fill_missing": "Not specified",
+    "max_tokens_per_field": 2000,
+    "style": "plain_english_non_lawyer",
+    "hallucination_guard": "strict"
+  }
+}

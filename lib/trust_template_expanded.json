@@ -1,0 +1,320 @@
+{
+  "KEY_FIELDS": {
+    "Trust_Name": "string",
+    "Trust_Date": "string",
+    "Grantor_Settlor_Trustor": {
+      "Primary": ["string"],
+      "Co_Grantors": ["string"],
+      "Addresses": ["string"],
+      "Tax_ID_Numbers": ["string"]
+    },
+    "Trustees": {
+      "Initial_Trustees": {
+        "Names": ["string"],
+        "Addresses": ["string"],
+        "Relationship_to_Grantor": ["string"]
+      },
+      "Successor_Trustees": {
+        "First_Successor": ["string"],
+        "Second_Successor": ["string"],
+        "Third_Successor": ["string"],
+        "Succession_Order": "string"
+      },
+      "Co_Trustees": {
+        "Names": ["string"],
+        "Powers": "string",
+        "Unanimous_Required": "yes_no"
+      },
+      "Special_Trustees": {
+        "Investment_Trustee": "string",
+        "Distribution_Trustee": "string",
+        "Administrative_Trustee": "string"
+      }
+    },
+    "Beneficiaries": {
+      "Primary": {
+        "Names": ["string"],
+        "Birth_Dates": ["string"],
+        "Relationship_to_Grantor": ["string"],
+        "Vesting_Conditions": ["string"]
+      },
+      "Contingent": {
+        "Names": ["string"],
+        "Triggering_Events": ["string"],
+        "Distribution_Shares": ["string"]
+      },
+      "Remainder": {
+        "Names": ["string"],
+        "Distribution_Terms": ["string"]
+      },
+      "Charitable_Beneficiaries": {
+        "Organizations": ["string"],
+        "Tax_ID_Numbers": ["string"],
+        "Distribution_Amounts": ["string"]
+      }
+    },
+    "Trust_Type": {
+      "Revocable_Irrevocable": "string",
+      "Living_Testamentary": "string",
+      "Grantor_NonGrantor": "string",
+      "Simple_Complex": "string",
+      "Special_Type": "string"
+    },
+    "Trust_Purpose": {
+      "Primary_Purpose": "string",
+      "Secondary_Purposes": ["string"],
+      "Prohibited_Purposes": ["string"]
+    }
+  },
+  "DISTRIBUTION_PROVISIONS": {
+    "Income_Distributions": {
+      "Mandatory_Discretionary": "string",
+      "Frequency": "string",
+      "Standards": "string",
+      "To_Whom": ["string"],
+      "Accumulation_Provisions": "string"
+    },
+    "Principal_Distributions": {
+      "During_Grantor_Lifetime": {
+        "To_Grantor": "string",
+        "To_Others": "string",
+        "Conditions": "string"
+      },
+      "After_Grantor_Death": {
+        "Outright_Distributions": ["string"],
+        "Staged_Distributions": {
+          "Ages": ["string"],
+          "Percentages": ["string"],
+          "Conditions": ["string"]
+        },
+        "Discretionary_Standards": "string"
+      }
+    },
+    "Special_Distributions": {
+      "Education": "string",
+      "Health_Medical": "string",
+      "Support_Maintenance": "string",
+      "Business_Startup": "string",
+      "Home_Purchase": "string",
+      "Wedding_Special_Events": "string",
+      "Emergency_Provisions": "string"
+    },
+    "Distribution_Limitations": {
+      "Spendthrift_Provisions": "string",
+      "Creditor_Protection": "string",
+      "Divorce_Protection": "string",
+      "Substance_Abuse_Provisions": "string",
+      "Special_Needs_Provisions": "string"
+    }
+  },
+  "TRUSTEE_PROVISIONS": {
+    "Powers": {
+      "Investment_Powers": {
+        "Prudent_Investor_Rule": "string",
+        "Specific_Investments_Allowed": ["string"],
+        "Prohibited_Investments": ["string"],
+        "Business_Operations": "string",
+        "Real_Estate_Powers": "string"
+      },
+      "Distribution_Powers": {
+        "Absolute_Discretion": "yes_no",
+        "HEMS_Standard": "yes_no",
+        "Expanded_Standards": "string",
+        "Power_to_Loan": "yes_no",
+        "Power_to_Guarantee": "yes_no"
+      },
+      "Administrative_Powers": {
+        "Power_to_Amend": "string",
+        "Power_to_Terminate": "string",
+        "Power_to_Merge": "string",
+        "Power_to_Divide": "string",
+        "Power_to_Change_Situs": "string"
+      },
+      "Tax_Powers": {
+        "Tax_Elections": "string",
+        "Power_to_Allocate": "string",
+        "GST_Elections": "string"
+      }
+    },
+    "Duties": {
+      "Fiduciary_Duties": "string",
+      "Accounting_Requirements": {
+        "Frequency": "string",
+        "To_Whom": ["string"],
+        "Level_of_Detail": "string"
+      },
+      "Investment_Duties": "string",
+      "Impartiality_Duty": "string",
+      "Confidentiality_Duty": "string"
+    },
+    "Compensation": {
+      "Fee_Structure": "string",
+      "Reasonable_Compensation": "string",
+      "Reimbursement_of_Expenses": "string",
+      "Professional_Fees": "string"
+    },
+    "Liability_and_Indemnification": {
+      "Exculpation_Provisions": "string",
+      "Indemnification": "string",
+      "Bond_Requirements": "string",
+      "Insurance_Requirements": "string"
+    }
+  },
+  "TAX_PROVISIONS": {
+    "Income_Tax": {
+      "Grantor_Trust_Status": "string",
+      "Tax_Reimbursement": "string",
+      "Income_Tax_Payments": "string"
+    },
+    "Estate_Tax": {
+      "Marital_Deduction": "string",
+      "Charitable_Deduction": "string",
+      "Inclusion_in_Estate": "string",
+      "Formula_Clauses": "string"
+    },
+    "Gift_Tax": {
+      "Annual_Exclusion": "string",
+      "Crummey_Powers": "string",
+      "Gift_Splitting": "string"
+    },
+    "GST_Tax": {
+      "GST_Exempt_Status": "string",
+      "Dynasty_Provisions": "string",
+      "Skip_Person_Definitions": "string",
+      "Inclusion_Ratio": "string"
+    },
+    "State_Tax": {
+      "State_Income_Tax": "string",
+      "State_Estate_Tax": "string",
+      "Nexus_Provisions": "string"
+    },
+    "Tax_ID_Requirements": {
+      "EIN_Required": "yes_no",
+      "Filing_Requirements": "string",
+      "K1_Distributions": "string"
+    }
+  },
+  "AMENDMENT_TERMINATION": {
+    "Amendment_Provisions": {
+      "Who_Can_Amend": "string",
+      "Scope_of_Amendments": "string",
+      "Prohibited_Amendments": "string",
+      "Notice_Requirements": "string"
+    },
+    "Revocation_Provisions": {
+      "Right_to_Revoke": "string",
+      "Partial_Revocation": "string",
+      "Method_of_Revocation": "string"
+    },
+    "Termination_Provisions": {
+      "Termination_Events": ["string"],
+      "Mandatory_Termination_Date": "string",
+      "Early_Termination": "string",
+      "Distribution_on_Termination": "string"
+    },
+    "Perpetuities_Savings_Clause": "string"
+  },
+  "SPECIAL_PROVISIONS": {
+    "Spendthrift_Clause": {
+      "Full_Spendthrift": "yes_no",
+      "Exceptions": ["string"],
+      "Self_Settled_Provisions": "string"
+    },
+    "No_Contest_Clause": {
+      "In_Terrorem_Provision": "yes_no",
+      "Scope": "string",
+      "Exceptions": ["string"],
+      "Gift_to_Contestant": "string"
+    },
+    "Trust_Protector": {
+      "Identity": "string",
+      "Powers": {
+        "Remove_Replace_Trustee": "yes_no",
+        "Modify_Trust": "yes_no",
+        "Change_Beneficiaries": "yes_no",
+        "Change_Situs": "yes_no",
+        "Veto_Distributions": "yes_no",
+        "Other_Powers": ["string"]
+      },
+      "Successor_Protectors": ["string"],
+      "Compensation": "string"
+    },
+    "Special_Needs_Provisions": {
+      "Supplemental_Needs_Trust": "yes_no",
+      "ABLE_Account_Provisions": "string",
+      "Government_Benefits_Protection": "string"
+    },
+    "Pet_Care_Provisions": {
+      "Pet_Caregiver": "string",
+      "Care_Instructions": "string",
+      "Funding_Amount": "string",
+      "Remainder_Beneficiary": "string"
+    },
+    "Digital_Asset_Provisions": {
+      "Digital_Asset_Authorization": "string",
+      "Cryptocurrency_Provisions": "string",
+      "Online_Account_Access": "string"
+    },
+    "Arbitration_Mediation": {
+      "Mandatory_Arbitration": "yes_no",
+      "Mediation_First": "yes_no",
+      "Arbitration_Rules": "string",
+      "Venue": "string"
+    }
+  },
+  "ADMINISTRATIVE_PROVISIONS": {
+    "Governing_Law": {
+      "State": "string",
+      "Choice_of_Law": "string",
+      "Conflict_of_Laws": "string"
+    },
+    "Trust_Situs": {
+      "Initial_Situs": "string",
+      "Change_of_Situs": "string",
+      "Multiple_Situs": "string"
+    },
+    "Definitions": {
+      "Children": "string",
+      "Descendants": "string",
+      "Incapacity": "string",
+      "Education": "string",
+      "Per_Stirpes": "string",
+      "Survive": "string"
+    },
+    "Miscellaneous": {
+      "Severability": "string",
+      "Headings": "string",
+      "Gender_Number": "string",
+      "Counterparts": "string",
+      "Integration_Clause": "string"
+    }
+  },
+  "SPECIFIC_BEQUESTS": {
+    "Tangible_Personal_Property": {
+      "Disposition": "string",
+      "Memorandum_Reference": "string",
+      "Storage_Insurance": "string"
+    },
+    "Real_Estate": {
+      "Properties": ["string"],
+      "Disposition": ["string"],
+      "Maintenance_Obligations": ["string"]
+    },
+    "Business_Interests": {
+      "Entities": ["string"],
+      "Succession_Plans": ["string"],
+      "Buy_Sell_Agreements": ["string"]
+    },
+    "Financial_Accounts": {
+      "Bank_Accounts": ["string"],
+      "Investment_Accounts": ["string"],
+      "Retirement_Accounts": ["string"]
+    },
+    "Intellectual_Property": {
+      "Patents": ["string"],
+      "Copyrights": ["string"],
+      "Trademarks": ["string"],
+      "Royalties": ["string"]
+    }
+  }
+}
