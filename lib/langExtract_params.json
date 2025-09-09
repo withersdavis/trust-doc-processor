@@ -1,20 +1,69 @@
 {
-  "params": {
-    "return_format": "json",
-    "granularity": "paragraph",
-    "focus": [
-      "trust structure and purpose",
-      "trustee powers and limitations",
-      "distribution triggers and ages",
-      "beneficiary protections",
-      "amend/terminate mechanics",
-      "unique clauses"
-    ],
-    "fact_mode": true,
-    "include_citations": "inline",
-    "fill_missing": "Not specified",
-    "max_tokens_per_field": 2000,
-    "style": "plain_english_non_lawyer",
-    "hallucination_guard": "strict"
+  "model_type": "gemini",
+  "model_id": "gemini-1.5-flash",
+  "temperature": 0.1,
+  "max_tokens": 4096,
+  "max_char_buffer": 8000,
+  "extraction_passes": 2,
+  "use_schema_constraints": true,
+  "fence_output": true,
+  "debug": false,
+  
+  "citation_config": {
+    "require_citations": true,
+    "citation_mode": "all_key_fields",
+    "min_citation_confidence": 0.8,
+    "extract_context": true,
+    "context_window": 1000,
+    "preserve_full_sentences": true,
+    "include_location_info": true
+  },
+  
+  "extraction_config": {
+    "first_pass": {
+      "focus": "citations_and_references",
+      "extract_all_mentions": true,
+      "capture_context": true
+    },
+    "second_pass": {
+      "focus": "structured_fields",
+      "link_to_citations": true,
+      "require_source_text": true
+    }
+  },
+  
+  "prompt_additions": {
+    "key_fields_instruction": "For each KEY_FIELD extracted, you MUST provide the exact source text from the document with at least 100 characters of surrounding context. Include the location (character position) where this information was found.",
+    "citation_instruction": "Every value in KEY_FIELDS must have a corresponding citation that shows the exact text from the document that supports this extraction. Include enough context (up to 1000 characters) to understand where and how this information appears in the document.",
+    "no_inference": "Do NOT infer or generate any information. Only extract what is explicitly stated in the document with its exact source text."
+  },
+  
+  "output_format": {
+    "include_citations": true,
+    "citation_format": {
+      "text": "extracted_text",
+      "class": "citation_type",
+      "location": {
+        "start": "character_position",
+        "end": "character_position",
+        "length": "text_length"
+      },
+      "context": "surrounding_text_up_to_1000_chars",
+      "confidence": "0.0-1.0"
+    }
+  },
+  
+  "fill_missing": {
+    "enabled": true,
+    "default_value": "Not specified",
+    "require_explicit_absence": true,
+    "note": "Only use 'Not specified' when the information is genuinely not present in the document"
+  },
+  
+  "validation": {
+    "ensure_citations_for_key_fields": true,
+    "reject_uncited_extractions": true,
+    "minimum_context_length": 50,
+    "maximum_context_length": 1000
   }
 }

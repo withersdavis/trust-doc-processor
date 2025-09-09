@@ -45,7 +45,7 @@ router.post('/:fileId', async (req, res) => {
     );
     
     // Save to results folder
-    const savedFilename = await saveResultToFile(result);
+    const savedFilename = await saveResultToFile(result, uploadedFile.originalName);
     
     res.json({
       success: true,

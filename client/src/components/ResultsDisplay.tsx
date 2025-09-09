@@ -10,14 +10,20 @@ interface ProcessingResult {
     processing_time_ms: number;
   };
   extraction: {
-    KEY_FIELDS: any;
-    SUMMARY_PARAGRAPHS: any;
-    DETAILS: any;
+    // Support both old and new template structures
+    KEY_FIELDS?: any;
+    SUMMARY_PARAGRAPHS?: any;
+    DETAILS?: any;
+    Basic_Information?: any;
+    Summary?: any;
+    Details?: any;
   };
   citations: Array<{
-    text: string;
+    text?: string;
+    citation_key?: string;
+    full_text?: string;
     location?: any;
-    confidence: number;
+    confidence?: number;
   }>;
 }
 
@@ -27,8 +33,10 @@ interface ResultsDisplayProps {
 }
 
 export function ResultsDisplay({ result, filename }: ResultsDisplayProps) {
+  // Get all section names from the extraction
+  const sectionNames = Object.keys(result.extraction || {});
   const [expandedSections, setExpandedSections] = useState<Set<string>>(
-    new Set(['KEY_FIELDS', 'SUMMARY_PARAGRAPHS', 'DETAILS'])
+    new Set(sectionNames)
   );
   const [copied, setCopied] = useState(false);
 
@@ -165,7 +173,9 @@ export function ResultsDisplay({ result, filename }: ResultsDisplayProps) {
                 className="w-full px-4 py-3 flex items-center justify-between hover:bg-gray-50 transition-colors"
                 onClick={() => toggleSection(section)}
               >
-                <h3 className="font-semibold text-lg">{section.replace(/_/g, ' ')}</h3>
+                <h3 className="font-semibold text-lg">
+                  {section.replace(/_/g, ' ').replace(/([A-Z])/g, ' $1').trim()}
+                </h3>
                 {expandedSections.has(section) ? (
                   <ChevronDown className="h-5 w-5" />
                 ) : (
@@ -201,9 +211,19 @@ export function ResultsDisplay({ result, filename }: ResultsDisplayProps) {
                   {result.citations.map((citation, index) => (
                     <div key={index} className="p-3 bg-gray-50 rounded text-sm">
                       <div className="font-medium text-gray-700 mb-1">
-                        Citation {index + 1}
+                        {citation.citation_key ? 
+                          `[${citation.citation_key}] Citation ${index + 1}` : 
+                          `Citation ${index + 1}`
+                        }
                       </div>
-                      <div className="text-gray-600">{citation.text}</div>
+                      <div className="text-gray-600">
+                        {citation.full_text || citation.text || 'No text available'}
+                      </div>
+                      {citation.location && (
+                        <div className="text-xs text-gray-500 mt-1">
+                          Location: {citation.location.start || 0} - {citation.location.end || 0}
+                        </div>
+                      )}
                       {citation.confidence && (
                         <div className="text-xs text-gray-500 mt-1">
                           Confidence: {(citation.confidence * 100).toFixed(1)}%

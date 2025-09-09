@@ -15,6 +15,10 @@
 2. **User-requested commits** - Only commit when explicitly requested by the user
 3. **Meaningful commit messages** - Include clear descriptions of changes when committing
 
+### Debugging and Problem Analysis
+1. **Focus on most recent test run** - When analyzing problems or debugging, ONLY look at the most recent test run and its logs, unless explicitly asked to look at earlier runs
+2. **Don't mix log data** - Avoid confusion by not mixing data from different test runs when troubleshooting
+
 ## Current Implementation Status
 
 ### Overview

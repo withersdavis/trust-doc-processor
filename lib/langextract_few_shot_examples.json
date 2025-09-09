@@ -1,0 +1,110 @@
+[
+  {
+    "Instruction": "Summarize Current Benefits of Trust",
+    "Input": "The Trustees shall distribute to any one or more of JERRY SIMONS and the descendants of JERRY SIMONS as much of the net income and/or principal of the trust as the Trustees may at any time and from time to time determine, in such amounts or proportions as the Trustees may from time to time select, for the recipient's health, education, maintenance and support, in his or her accustomed manner of living.\r\nThe Trustees shall distribute to any one or more of JERRY SIMONS and the descendants of JERRY SIMONS as much of the net income and/or principal of the trust as the Trustees (excluding, however, any Interested Trustee) may at any time and from time to time determine, in such amounts or proportions as the Trustees (excluding, however, any Interested Trustee) may from time to time select, for any purpose,\r\nAny net income not so distributed shall be accumulated and annually added to principal.\r\nWithout limiting the Trustees' discretion, the Trustees may consider the needs of JERRY SIMONS as more important than the needs of the descendants of JERRY SIMONS or of any other beneficiary.",
+    "Output": {
+      "Reasoning": "The first paragraph describes a distribution for \"health, education, maintenance, and support,\" which can be summarized as \"For Basic Needs.\" This paragraph also states that \"the Trustees may... determine\" the amounts, implying all trustees can make the decisions.\r\nThe second paragraph describes a separate distribution for \"any purpose,\" but it explicitly excludes \"any Interested Trustee\" (defined elsewhere as Jerry Simons). This is a key restriction that prevents self-dealing.\r\nThe third paragraph explains what happens to undistributed income, stating it \"shall be accumulated and annually added to principal.\" This is a key rule of the trust.\r\nThe final paragraph states the trustees \"may consider the needs of JERRY SIMONS as more important than the needs of the descendants,\" which is an important discretionary power to include.\r\nThe final output synthesizes these four key points into a clear and concise summary for a non-legal audience.",
+      "Final Extracted Summary": "The trustees can distribute money from the trust to Jerry Simons and his descendants (children, grandchildren, etc.) in two ways:\r\nFor Basic Needs: The trustees can give them money for health, education, maintenance, and support to maintain their normal standard of living. All trustees can make these decisions.\r\nFor Any Purpose: The trustees can also give them money for any reason at all, but Jerry Simons cannot participate in these decisions if he's serving as a trustee (this prevents self-dealing).\r\nThe trustees have complete discretion over who gets money, when they get it, and how much they receive. They can explicitly prioritize Jerry Simons' needs over his descendants if they choose. Any income that isn't distributed stays in the trust and becomes part of the principal."
+    }
+  },
+  {
+    "Instruction": "Find Trust Name and Effective Date",
+    "Input": "This 2006 Paula Huntington Irrevocable Trust Agreement is made on May 31, 2006, between, I, Paula Huntington, and Ned Flanders, the initial trustee of the trust.",
+    "Output": {
+      "Reasoning": "The Trust_Name is explicitly stated in the first part of the document as \"2006 Paula Huntington Irrevocable Trust Agreement.\"\r\nThe Effective Date is given immediately after the trust name: \"May 31, 2006.\"\r\nThe Trustee is identified as \"Ned Flanders,\" who is described as \"the initial trustee.\"",
+      "Final Extracted Data": {
+        "Trust_Name": "2006 Paula Huntington Irrevocable Trust Agreement",
+        "Effective Date": "May 31, 2006",
+        "Trustee": "Ned Flanders"
+      }
+    }
+  },
+  {
+    "Instruction": "Extract the primary trust name from the document. The primary trust is the main trust created by the document. Do not confuse it with any contingent or secondary trusts created within the document's provisions. Show your reasoning before providing the final extracted name.",
+    "Input": "\"JERRY SIMONS 2012 TRUST THIS IS A TRUST AGREEMENT... ARTICLE I Trust Name This Agreement and the trusts hereunder may be referred to as the JERRY SIMONS 2012 TRUST.\" ... \"ARTICLE III Distribution Upon Death of JERRY SIMONS... set aside and divided into per stirpital shares for JERRY SIMONS's descendants then living... to be distributed to the Trustees of the Descendants' Separate Trusts to be held as a separate trust...\"",
+    "Output": {
+      "Reasoning": "The document introduces itself in the opening as a \"TRUST AGREEMENT\" and states, \"This Agreement and the trusts hereunder may be referred to as the JERRY SIMONS 2012 TRUST.\" This is the primary name of the trust.\r\nThe text later mentions \"Descendants' Separate Trusts,\" but it is described as a new trust created to hold a share of the principal after Jerry Simons' death. This indicates it is a secondary, contingent trust, not the name of the main trust agreement.\r\nTherefore, the primary trust name is the \"JERRY SIMONS 2012 TRUST.\"",
+      "Final Extracted Trust Name": "JERRY SIMONS 2012 TRUST"
+    }
+  },
+  {
+    "Instruction": "Summarize the distribution rules upon the death of the grantor.",
+    "Input": "C. Upon Death of JERRY SIMONS\r\nUpon the death of JERRY SIMONS, the property then held in the Lifetime Trust shall be:\r\nDistributed to one or more persons (other than JERRY SIMONS, JERRY SIMONS's estate, JERRY SIMONS's creditors or the creditors of JERRY SIMONS's estate) on such terms as JERRY SIMONS may appoint by a Will or other signed writing that is acknowledged before a notary public specifically referring to this power of appointment; or, in default of appointment or insofar as an appointment is not effective;\r\nSet aside and divided into per stirpital shares for JERRY SIMONS's descendants then living or, if there is no descendant of JERRY SIMONS then living, for the Settlor's descendants then living, the share so set aside for a descendant to be distributed to the Trustees of the Descendants' Separate Trusts to be held as a separate trust to be disposed of under the terms of the Descendants' Separate Trusts under this Agreement, the descendant for whom the share is set aside to be the Beneficiary of his or her own Descendant's Separate Trust.\r\nD. Disinterested Trustees May Confer Power\r\nThe Trustees (excluding, however, any Interested Trustee) may at any time, prior to the death of JERRY SIMONS, by an instrument in writing:\r\nConfer upon JERRY SIMONS a power exercisable only by Will to appoint all or part of the OST Non-Exempt Trust to the creditors of JERRY SIMONS's estate (other than any taxing authority), and the instrument conferring power may require consent of the Trustees (other than any Interested Trustee);\r\nRevoke any such instrument previously executed, with or without executing a replacement instrument; and/or\r\nIrrevocably relinquish the powers conferred under (1) and/or (2).\r\nWithout limiting the Trustees' discretion, the Trustees may use the authority conferred by this Section to subject the trust property to estate tax instead of the generation-skipping transfer tax when it appears that it may reduce overall taxes to do so.\r\nJERRY SIMONS's power conferred by this Section shall not be exercisable in any manner so as to postpone the vesting of any estate or interest in the appointed property or to suspend the absolute ownership or power of alienation of the appointed property for a period ascertainable without regard to the date of this Agreement, and the validity of any exercise shall be measured with respect to that date.",
+    "Output": {
+      "Reasoning": "The section \"Upon Death of JERRY SIMONS\" defines the two primary paths for distributing the trust's property after his death. The first is through a \"power of appointment\" via his will, and the second is the default \"per stirpital\" distribution to his descendants. These are the main \"what happens\" options.\r\nThe \"power of appointment\" clause is paraphrased to explain that Jerry can choose who gets the money but with clear exceptions (not to himself, his estate, or his creditors). The notarization requirement is a key detail to include.\r\nThe second path, the \"per stirpital\" share, is explained by summarizing that the money is \"set aside and divided\" for his descendants and placed into separate trusts for each person. This is the \"automatic\" option.\r\nThe section \"Disinterested Trustees May Confer Power\" describes a separate, special power that is distinct from the automatic distributions. This is summarized under a new, distinct heading.\r\nThe details of this special power are simplified: it's for independent trustees, it's about giving Jerry a power to pay creditors (except for tax debts), and it is for tax planning purposes to potentially save money.\r\nAll the original legal language is translated into clear, human-readable bullet points to make the complex legal concepts understandable.",
+      "Final Extracted Summary": "Jerry Simons Trust Distribution Rules\r\nWhat Happens When Jerry Simons Dies\r\nOption 1 - Jerry Can Choose Who Gets the Money:\r\nHe can write a will or signed document (must be notarized) saying who gets the trust property\r\nHe CANNOT give it to himself, his estate, or anyone he owes money to\r\nOption 2 - Automatic Distribution If Jerry Doesn't Choose:\r\nThe money gets split among Jerry's children/grandchildren who are still alive\r\nIf Jerry has no living descendants, it goes to the original trust creator's children/grandchildren\r\nEach person's share goes into their own separate trust account\r\nSpecial Powers for Independent Trustees\r\nTrustees who don't have a personal stake can give Jerry extra powers to pay his debts after death (but not tax debts)\r\nThey can change or take away these powers at any time\r\nThis is mainly for tax planning purposes - sometimes it's better to pay estate tax instead of other types of taxes"
+    }
+  },
+  {
+    "Instruction": "Identify Co-Trustees or Successor Trustees.",
+    "Input": "ARTICLE II Lifetime Trust A. During Life of JERRY SIMONS, the Trustees shall administer the trust... 1. The Trustees shall distribute to any one or more of JERRY SIMONS and the descendants of JERRY SIMONS as much of the net income and/or principal of the trust as the Trustees may at any time and from time to time determine...",
+    "Output": {
+      "Reasoning": "The provided text discusses distributions but does not mention any co-trustees.\r\nTherefore, no names can be extracted for this field.",
+      "Final Extracted Data": {
+        "Co_Trustees.Names": "N/A"
+      }
+    }
+  },
+  {
+    "Instruction": "Identify Successor Trustees and their order of preference.",
+    "Input": "The following individuals shall serve as the Successor Trustees, in order of preference, if the initial Trustee is unable or unwilling to serve: first, CARA KOSS; and second, STEPHEN W. PORTER.",
+    "Output": {
+      "Reasoning": "The document explicitly names two individuals as \"Successor Trustees.\"\r\nThe names are listed in a clear, sequential order.\r\nBoth names must be extracted and included as they both fulfill the role of \"Successor Trustees.\"",
+      "Final Extracted Data": {
+        "Successor_Trustees": [
+          "CARA KOSS",
+          "STEPHEN W. PORTER"
+        ]
+      }
+    }
+  },
+  {
+    "Instruction": "Extract the Effective Date from the trust document.",
+    "Input": "JERRY SIMONS 2012 TRUST THIS IS A TRUST AGREEMENT (sometimes referred to as \"this Agreement\") dated this 30 day of May, 2012, between CARL HUNTINGTON (the \"Settlor\")...\r\n...IN WITNESS WHEREOF, the Trustees and the Settlor have signed this Agreement, effective the day and year first above written...",
+    "Output": {
+      "Reasoning": "The first paragraph of the document states the agreement is \"dated this 30 day of May, 2012.\"\r\nThe final clause references this date by using the phrase \"effective the day and year first above written.\"\r\nThe model must cross-reference the ambiguous phrase with the specific date mentioned at the beginning of the document to find the correct `Effective Date`.",
+      "Final Extracted Data": {
+        "Effective Date": "May 30, 2012"
+      }
+    }
+  },
+  {
+    "Instruction": "Identify the Grantor, also known as the Settlor, of the trust.",
+    "Input": "JERRY SIMONS 2012 TRUST ... dated this 30 day of May, 2012, between CARL HUNTINGTON (the \"Settlor.\") and JANIYA SHEPHERD, as Trustee...",
+    "Output": {
+      "Reasoning": "The document explicitly states that CARL HUNTINGTON is the 'Settlor'. The Settlor is the legal term for the individual who creates and funds the trust, which is the same as the Grantor. The name 'CARL HUNTINGTON' should therefore be extracted and placed in the 'Grantor(s)' field.",
+      "Final Extracted Data": {
+        "Grantor(s)": [
+          "CARL HUNTINGTON"
+        ]
+      }
+    }
+  },
+  {
+    "Instruction": "Summarize the purpose and how the trust works from the following text.",
+    "Input": "JERRY SIMONS 2012 TRUST... This is a trust agreement... WHEREAS, the Settlor desires to create a trust... NOW, THEREFORE, the Settlor intends to transfer property to the Trustees, IN TRUST, and the Trustees agree to accept the property and to hold, manage and distribute the property under the terms of this Agreement.",
+    "Output": {
+      "Reasoning": "The 'WHEREAS' clause states the Settlor's desire to 'create a trust', and the 'NOW, THEREFORE' clause explains that the Settlor will 'transfer property to the Trustees, IN TRUST,' and the Trustees will 'hold, manage, and distribute the property.' The purpose is the Settlor's intent to create a trust. The 'how' is the mechanism of the property transfer and subsequent management by the trustees.",
+      "Final Extracted Summary": {
+        "Purpose_and_Intent": "The purpose of the trust is for the Settlor to transfer property to the Trustees in order to create a trust. The Settlor's intent is to have the Trustees manage and distribute the property according to the terms of the agreement.",
+        "How_the_Trust_Works": "The trust is established by the Settlor transferring property to the Trustees, who then hold, manage, and distribute the property according to the rules set forth in the agreement."
+      }
+    }
+  },
+  {
+    "Instruction": "Identify the initial Trustee(s) and Beneficiaries of the trust.",
+    "Input": "This is a trust agreement... between CARL HUNTINGTON (the \"Settlor.\") and JANIYA SHEPHERD, as Trustee... During the life of JERRY SIMONS, the Trustees shall administer the trust... The Trustees shall distribute to any one or more of JERRY SIMONS and the descendants of JERRY SIMONS as much of the net income and/or principal of the trust as the Trustees may at any time and from time to time determine...",
+    "Output": {
+      "Reasoning": "The document explicitly states that 'JANIYA SHEPHERD' is the initial 'Trustee'. The text also clearly identifies 'JERRY SIMONS' and 'the descendants of JERRY SIMONS' as the recipients of distributions from the trust, which means they are the beneficiaries.",
+      "Final Extracted Data": {
+        "Trustee(s)": [
+          "JANIYA SHEPHERD"
+        ],
+        "Primary_Beneficiaries": [
+          "JERRY SIMONS",
+          "descendants of JERRY SIMONS"
+        ]
+      }
+    }
+  }
+]

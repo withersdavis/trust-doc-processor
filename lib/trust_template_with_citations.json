@@ -1,0 +1,204 @@
+{
+  "KEY_FIELDS": {
+    "Trust_Name": {
+      "type": "string",
+      "citation_required": true,
+      "citation_class": "trust_name",
+      "extract_with_context": true,
+      "description": "Extract the exact trust name with surrounding context showing where it's defined"
+    },
+    "Grantor_Settlor_Trustor": {
+      "type": ["string"],
+      "citation_required": true,
+      "citation_class": "grantor_primary",
+      "extract_with_context": true,
+      "description": "Extract grantor/settlor names with context showing their role"
+    },
+    "Trustees": {
+      "Initial_Trustees": {
+        "type": ["string"],
+        "citation_required": true,
+        "citation_class": "initial_trustee",
+        "extract_with_context": true,
+        "description": "Extract initial trustee names with context"
+      },
+      "Successor_Trustee_Provisions": {
+        "type": "string",
+        "citation_required": true,
+        "citation_class": "successor_trustee",
+        "extract_with_context": true,
+        "description": "Extract successor trustee provisions with full context"
+      }
+    },
+    "Beneficiaries": {
+      "Primary": {
+        "type": ["string"],
+        "citation_required": true,
+        "citation_class": "primary_beneficiary",
+        "extract_with_context": true,
+        "description": "Extract primary beneficiaries with context showing their designation"
+      },
+      "Contingent": {
+        "type": ["string"],
+        "citation_required": true,
+        "citation_class": "contingent_beneficiary",
+        "extract_with_context": true,
+        "description": "Extract contingent beneficiaries with context"
+      }
+    },
+    "Effective_Date": {
+      "type": "string",
+      "citation_required": true,
+      "citation_class": "trust_date",
+      "extract_with_context": true,
+      "description": "Extract the effective date with surrounding context"
+    },
+    "Trust_Type": {
+      "type": "string",
+      "citation_required": true,
+      "citation_class": "trust_type",
+      "extract_with_context": true,
+      "description": "Extract trust type (revocable/irrevocable) with context"
+    },
+    "Trust_Purpose": {
+      "type": "string",
+      "citation_required": true,
+      "citation_class": "trust_purpose_statement",
+      "extract_with_context": true,
+      "description": "Extract the stated purpose of the trust with context"
+    }
+  },
+  "SUMMARY_PARAGRAPHS": {
+    "Trust_Structure_And_Purpose": {
+      "type": "paragraph",
+      "max_length": 1000,
+      "include_citations": true,
+      "citation_classes": ["trust_name", "trust_date", "trust_creation", "trust_purpose_statement"],
+      "description": "Summarize trust structure with citation references"
+    },
+    "Distribution_Provisions": {
+      "type": "paragraph",
+      "max_length": 1000,
+      "include_citations": true,
+      "citation_classes": ["distribution_income", "distribution_principal", "distribution_timing"],
+      "description": "Summarize distribution provisions with citations"
+    },
+    "Trustee_Powers_And_Duties": {
+      "type": "paragraph",
+      "max_length": 1000,
+      "include_citations": true,
+      "citation_classes": ["trustee_administrative_powers", "trustee_investment_powers", "trustee_distribution_powers"],
+      "description": "Summarize trustee powers with citations"
+    },
+    "Beneficiary_Provisions": {
+      "type": "paragraph",
+      "max_length": 1000,
+      "include_citations": true,
+      "citation_classes": ["primary_beneficiary", "contingent_beneficiary", "beneficiary_designation"],
+      "description": "Summarize beneficiary provisions with citations"
+    },
+    "Amendment_And_Termination": {
+      "type": "paragraph",
+      "max_length": 1000,
+      "include_citations": true,
+      "citation_classes": ["amendment_provision", "termination_provision", "revocation_provision"],
+      "description": "Summarize amendment and termination provisions with citations"
+    },
+    "Special_Provisions": {
+      "type": "paragraph",
+      "max_length": 1000,
+      "include_citations": true,
+      "citation_classes": ["gst_provisions", "special_provisions", "tax_provisions"],
+      "description": "Summarize special provisions with citations"
+    }
+  },
+  "DETAILS": {
+    "Situs_Trust_Location": {
+      "type": "string",
+      "citation_required": false,
+      "citation_class": "situs_location"
+    },
+    "Governing_Law": {
+      "type": "string",
+      "citation_required": false,
+      "citation_class": "governing_law"
+    },
+    "Duration_RAP": {
+      "type": "string",
+      "citation_required": false,
+      "citation_class": "duration_rap"
+    },
+    "GST_Tax_Planning": {
+      "type": "string",
+      "citation_required": false,
+      "citation_class": "gst_tax"
+    },
+    "Tax_ID_EIN_Requirements": {
+      "type": "string",
+      "citation_required": false,
+      "citation_class": "tax_id_ein"
+    },
+    "Spendthrift_Provisions": {
+      "Present": {
+        "type": "yes_no_unknown"
+      },
+      "Description": {
+        "type": "string",
+        "citation_required": false,
+        "citation_class": "spendthrift"
+      }
+    },
+    "No_Contest_In_Terrorem": {
+      "type": "yes_no_unknown",
+      "citation_class": "no_contest"
+    },
+    "Trust_Protector": {
+      "Present": {
+        "type": "yes_no_unknown"
+      },
+      "Name": {
+        "type": "string",
+        "citation_class": "trust_protector_name"
+      },
+      "Powers": {
+        "type": "string",
+        "citation_class": "trust_protector_powers"
+      }
+    },
+    "Accounting_Requirements": {
+      "type": "string",
+      "citation_class": "accounting"
+    },
+    "Bond_Requirements_for_Trustee": {
+      "type": "string",
+      "citation_class": "bond_requirements"
+    },
+    "Trustee_Compensation": {
+      "type": "string",
+      "citation_class": "trustee_compensation"
+    },
+    "Definition_of_Incapacity": {
+      "type": "string",
+      "citation_class": "incapacity_definition"
+    },
+    "Specific_Asset_Dispositions": {
+      "type": ["string"],
+      "citation_class": "specific_assets"
+    },
+    "Charitable_Provisions": {
+      "type": "string",
+      "citation_class": "charitable"
+    },
+    "Pet_Trust_Provisions": {
+      "type": "string",
+      "citation_class": "pet_trust"
+    }
+  },
+  "EXTRACTION_INSTRUCTIONS": {
+    "citation_mode": "required_for_key_fields",
+    "context_window": 1000,
+    "extract_full_sentences": true,
+    "preserve_original_text": true,
+    "link_citations_to_fields": true
+  }
+}
