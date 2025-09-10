@@ -72,8 +72,11 @@ router.get('/results', async (req, res) => {
         .map(async (filename) => {
           const filepath = path.join(resultsDir, filename);
           const stats = await fs.stat(filepath);
+          const fileType = filename.startsWith('RAW_') ? 'raw' : 
+                          filename.startsWith('FORMATTED_') ? 'formatted' : 'legacy';
           return {
             filename,
+            type: fileType,
             size: stats.size,
             created: stats.birthtime,
             modified: stats.mtime

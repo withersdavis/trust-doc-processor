@@ -16,9 +16,13 @@ interface Citation {
 }
 
 interface ProcessingResult {
+  // Support both old and new template structures
   KEY_FIELDS?: Record<string, any>;
   SUMMARY_PARAGRAPHS?: Record<string, any>;
   DETAILS?: Record<string, any>;
+  Basic_Information?: Record<string, any>;
+  Summary?: Record<string, any>;
+  Details?: Record<string, any>;
   citations?: Citation[];
 }
 
@@ -258,9 +262,10 @@ const ResultsView: React.FC<ResultsViewProps> = ({ result, originalText, jsonFil
         
         <ScrollArea className="h-[calc(100vh-120px)]">
           <div className="p-4">
-            {renderSection('Key Fields', result.KEY_FIELDS)}
-            {renderSection('Summary Paragraphs', result.SUMMARY_PARAGRAPHS)}
-            {renderSection('Details', result.DETAILS)}
+            {/* Support both old and new template structures */}
+            {renderSection('Basic Information', result.Basic_Information || result.KEY_FIELDS)}
+            {renderSection('Summary', result.Summary || result.SUMMARY_PARAGRAPHS)}
+            {renderSection('Details', result.Details || result.DETAILS)}
             
             {/* Citations section for reference */}
             {result.citations && result.citations.length > 0 && (

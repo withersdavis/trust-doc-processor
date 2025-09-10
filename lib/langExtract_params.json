@@ -1,43 +1,33 @@
 {
   "model_type": "gemini",
-  "model_id": "gemini-1.5-flash",
+  "model_id": "gemini-2.5-flash",
   "temperature": 0.1,
   "max_tokens": 4096,
-  "max_char_buffer": 8000,
-  "extraction_passes": 2,
+  "max_char_buffer": 4000,
+  "extraction_passes": 1,
+  "max_workers": 10,
+  "batch_length": 10,
   "use_schema_constraints": true,
   "fence_output": true,
   "debug": false,
-  
   "citation_config": {
     "require_citations": true,
-    "citation_mode": "all_key_fields",
-    "min_citation_confidence": 0.8,
+    "citation_mode": "all_data",
+    "min_citation_confidence": 0.7,
     "extract_context": true,
-    "context_window": 1000,
+    "context_window": 8000,
     "preserve_full_sentences": true,
     "include_location_info": true
   },
-  
   "extraction_config": {
-    "first_pass": {
-      "focus": "citations_and_references",
+    "single_pass": {
+      "focus": "comprehensive_extraction",
       "extract_all_mentions": true,
-      "capture_context": true
-    },
-    "second_pass": {
-      "focus": "structured_fields",
+      "capture_context": true,
       "link_to_citations": true,
       "require_source_text": true
     }
   },
-  
-  "prompt_additions": {
-    "key_fields_instruction": "For each KEY_FIELD extracted, you MUST provide the exact source text from the document with at least 100 characters of surrounding context. Include the location (character position) where this information was found.",
-    "citation_instruction": "Every value in KEY_FIELDS must have a corresponding citation that shows the exact text from the document that supports this extraction. Include enough context (up to 1000 characters) to understand where and how this information appears in the document.",
-    "no_inference": "Do NOT infer or generate any information. Only extract what is explicitly stated in the document with its exact source text."
-  },
-  
   "output_format": {
     "include_citations": true,
     "citation_format": {
@@ -52,14 +42,12 @@
       "confidence": "0.0-1.0"
     }
   },
-  
   "fill_missing": {
     "enabled": true,
     "default_value": "Not specified",
     "require_explicit_absence": true,
     "note": "Only use 'Not specified' when the information is genuinely not present in the document"
   },
-  
   "validation": {
     "ensure_citations_for_key_fields": true,
     "reject_uncited_extractions": true,

@@ -22,10 +22,16 @@ export interface ProcessingResult {
     Details: any;
   };
   citations: any[];
+  original_langextract?: {
+    extractions: any[];
+    metadata: any;
+  };
 }
 
 /**
- * Save processing result to file
+ * Save processing result to file - creates two separate files:
+ * 1. RAW_[filename]_[timestamp].json - contains original LangExtract output
+ * 2. FORMATTED_[filename]_[timestamp].json - contains transformed/formatted output
  */
 export async function saveResultToFile(result: ProcessingResult, originalFilename: string): Promise<string> {
   const resultsDir = path.join(__dirname, '../../../results');
@@ -36,13 +42,27 @@ export async function saveResultToFile(result: ProcessingResult, originalFilenam
   // Generate filename with timestamp
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
   const baseFilename = path.basename(originalFilename, path.extname(originalFilename));
-  const resultFilename = `${baseFilename}_${timestamp}.json`;
-  const resultPath = path.join(resultsDir, resultFilename);
   
-  // Save result to file
-  await fs.writeFile(resultPath, JSON.stringify(result, null, 2));
+  // Save RAW LangExtract output if available
+  if (result.original_langextract) {
+    const rawFilename = `RAW_${baseFilename}_${timestamp}.json`;
+    const rawPath = path.join(resultsDir, rawFilename);
+    await fs.writeFile(rawPath, JSON.stringify(result.original_langextract, null, 2));
+  }
   
-  return resultPath;
+  // Create formatted result without the original_langextract field
+  const formattedResult = {
+    metadata: result.metadata,
+    extraction: result.extraction,
+    citations: result.citations
+  };
+  
+  // Save FORMATTED output
+  const formattedFilename = `FORMATTED_${baseFilename}_${timestamp}.json`;
+  const formattedPath = path.join(resultsDir, formattedFilename);
+  await fs.writeFile(formattedPath, JSON.stringify(formattedResult, null, 2));
+  
+  return formattedPath;
 }
 
 /**
@@ -92,6 +112,28 @@ export async function processDocumentWithStandardLangExtract(
           return;
         }
         
+        // Handle both new structure (with original) and old structure
+        let extraction, citations, originalLangextract;
+        
+        if (result.transformed) {
+          // New structure with both original and transformed
+          extraction = {
+            Basic_Information: result.transformed.Basic_Information || {},
+            Summary: result.transformed.Summary || {},
+            Details: result.transformed.Details || {}
+          };
+          citations = result.transformed.citations || [];
+          originalLangextract = result.original_langextract;
+        } else {
+          // Old structure (backwards compatibility)
+          extraction = {
+            Basic_Information: result.Basic_Information || {},
+            Summary: result.Summary || {},
+            Details: result.Details || {}
+          };
+          citations = result.citations || [];
+        }
+        
         // Format the result
         const processingResult: ProcessingResult = {
           metadata: {
@@ -99,12 +141,9 @@ export async function processDocumentWithStandardLangExtract(
             original_filename: filename,
             processing_time_ms: Date.now() - startTime
           },
-          extraction: {
-            Basic_Information: result.Basic_Information || {},
-            Summary: result.Summary || {},
-            Details: result.Details || {}
-          },
-          citations: result.citations || []
+          extraction,
+          citations,
+          ...(originalLangextract && { original_langextract: originalLangextract })
         };
         
         resolve(processingResult);

@@ -16,6 +16,10 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Serve static files from results directory (for local file access)
+const resultsPath = path.join(__dirname, '../../results');
+app.use('/results', express.static(resultsPath));
+
 // Ensure results directory exists
 async function ensureResultsDir() {
   const resultsDir = path.join(__dirname, '../../results');

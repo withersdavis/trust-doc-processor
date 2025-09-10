@@ -106,5 +106,247 @@
         ]
       }
     }
+  },
+  {
+    "Instruction": "Extract all roles and associated persons/entities mentioned in the trust document. Look for any pattern where a role/title is associated with a person or entity name.",
+    "Input": "Initial Trustee: Carl Huntington. Successor Trustees: If Carl is unable to serve, then Susan Huntington shall act. If she cannot serve, then Jerry Simons. Trust Protector: John Doe shall have the power to remove and replace trustees. Investment Advisor: ABC Wealth Management. Distribution Committee: Mary Jones and Bob Smith. Contingent Beneficiaries: Upon death of primary beneficiary, assets go to Paula Huntington and her descendants.",
+    "Output": {
+      "Final Extracted Data": {
+        "initial_trustee": "Carl Huntington",
+        "successor_trustee": "Susan Huntington",
+        "successor_trustee_alternate": "Jerry Simons",
+        "trust_protector": "John Doe",
+        "investment_advisor": "ABC Wealth Management",
+        "distribution_committee": ["Mary Jones", "Bob Smith"],
+        "contingent_beneficiary": "Paula Huntington",
+        "contingent_beneficiary_descendants": "descendants of Paula Huntington"
+      }
+    }
+  },
+  {
+    "Instruction": "Extract beneficiaries with their conditions. Identify primary (immediate), contingent (upon condition), and remainder (after others) beneficiaries.",
+    "Input": "During Grantor's lifetime, all income goes to the Grantor. Upon Grantor's death: First, the surviving spouse Susan receives the marital deduction amount. Second, children John and Jane receive equal shares of the family trust. If any child predeceases, their share goes to their descendants per stirpes. Ultimate remainder beneficiaries: If no descendants survive, assets go to the Red Cross.",
+    "Output": {
+      "Final Extracted Data": {
+        "lifetime_beneficiary": "Grantor",
+        "primary_beneficiary_upon_death": "Susan (surviving spouse)",
+        "contingent_beneficiaries": ["John", "Jane"],
+        "contingent_beneficiary_alternates": "descendants per stirpes",
+        "remainder_beneficiary": "Red Cross"
+      }
+    }
+  },
+  {
+    "Instruction": "Extract comprehensive trust information including how the trust works, its purpose, and trustee powers along with roles.",
+    "Input": "The purpose of this trust is to manage and distribute the Grantor's assets during lifetime and upon death, avoiding probate. The trust works as follows: The Grantor transfers property to the Trustee, who manages it according to these terms. The Grantor can revoke or amend the trust at any time. The Trustee has broad powers including the power to invest, sell, mortgage, and distribute property. Initial Trustee: John Smith. Successor Trustee: Jane Doe.",
+    "Output": {
+      "Final Extracted Data": {
+        "purpose_and_intent": "To manage and distribute the Grantor's assets during lifetime and upon death, avoiding probate",
+        "how_the_trust_works": "The Grantor transfers property to the Trustee, who manages it according to these terms. The Grantor can revoke or amend the trust at any time",
+        "trustee_powers": "The Trustee has broad powers including the power to invest, sell, mortgage, and distribute property",
+        "initial_trustee": "John Smith",
+        "successor_trustee": "Jane Doe"
+      }
+    }
+  },
+  {
+    "Instruction": "Extract any specialized roles or positions mentioned, even if unusual or specific to this trust.",
+    "Input": "Special Trustee for Real Estate: Robert Johnson. Trust Investment Committee Members: Sarah Williams, Michael Chen, and Jennifer Davis. Healthcare Advocate: Dr. Emily Brown. Educational Trust Advisor: Professor James Wilson. Farm Operations Manager: Tom Anderson.",
+    "Output": {
+      "Final Extracted Data": {
+        "special_trustee_for_real_estate": "Robert Johnson",
+        "trust_investment_committee_members": ["Sarah Williams", "Michael Chen", "Jennifer Davis"],
+        "healthcare_advocate": "Dr. Emily Brown",
+        "educational_trust_advisor": "Professor James Wilson",
+        "farm_operations_manager": "Tom Anderson"
+      }
+    }
+  },
+  {
+    "Instruction": "Identify the Trust_Type based on key characteristics in the document. Common types include: Revocable Trust, Irrevocable Trust, GRAT (Grantor Retained Annuity Trust), SLAT (Spousal Lifetime Access Trust), ILIT (Irrevocable Life Insurance Trust), CRUT (Charitable Remainder Unitrust), CRAT (Charitable Remainder Annuity Trust), Marital Trust, QTIP Trust, 529 Education Trust, Special Needs Trust, etc.",
+    "Input": "Carl Huntington Revocable Living Trust\nDated January 15, 2024\n\nARTICLE I – REVOCABILITY\nThe Grantor may revoke or amend this Trust at any time during his lifetime by written instrument delivered to the Trustee.",
+    "Output": {
+      "Reasoning": "The document title explicitly states 'Revocable Living Trust' and Article I is titled 'REVOCABILITY' which confirms the grantor can revoke or amend the trust at any time. These are clear indicators this is a Revocable Trust (also known as a Revocable Living Trust).",
+      "Final Extracted Data": {
+        "Trust_Type": "Revocable Trust"
+      }
+    }
+  },
+  {
+    "Instruction": "Identify the Trust_Type based on key characteristics in the document.",
+    "Input": "THE JOHN SMITH IRREVOCABLE LIFE INSURANCE TRUST\n\nWHEREAS, the Grantor desires to create an irrevocable trust to own life insurance policies on the Grantor's life for the benefit of the Grantor's spouse and descendants...\n\nThe Grantor hereby irrevocably transfers to the Trustee the life insurance policies listed on Schedule A... This Trust is irrevocable and may not be amended or revoked.",
+    "Output": {
+      "Reasoning": "The document title contains 'IRREVOCABLE LIFE INSURANCE TRUST' and explicitly states the trust is created to own life insurance policies. It also confirms the trust is irrevocable and cannot be amended or revoked. These characteristics identify this as an ILIT (Irrevocable Life Insurance Trust).",
+      "Final Extracted Data": {
+        "Trust_Type": "ILIT (Irrevocable Life Insurance Trust)"
+      }
+    }
+  },
+  {
+    "Instruction": "Identify the Trust_Type based on key characteristics in the document.",
+    "Input": "GRANTOR RETAINED ANNUITY TRUST AGREEMENT\n\nThe Grantor shall receive an annuity payment equal to 10% of the initial fair market value of the trust property, payable annually for a term of 5 years. At the end of the annuity term, the remaining trust property shall be distributed to the Grantor's children.",
+    "Output": {
+      "Reasoning": "The document title explicitly states 'GRANTOR RETAINED ANNUITY TRUST' and describes the key GRAT features: the grantor receives fixed annuity payments for a specified term, after which the remainder goes to beneficiaries. This is clearly a GRAT.",
+      "Final Extracted Data": {
+        "Trust_Type": "GRAT (Grantor Retained Annuity Trust)"
+      }
+    }
+  },
+  {
+    "Instruction": "Identify the Trust_Type based on key characteristics in the document.",
+    "Input": "SPOUSAL LIFETIME ACCESS TRUST\n\nThis irrevocable trust is established by John Doe (Grantor) for the benefit of Jane Doe (Spouse) and their descendants. During the Spouse's lifetime, the Trustee may distribute income and principal to the Spouse for health, education, maintenance and support. The Grantor's spouse shall have access to trust assets during her lifetime.",
+    "Output": {
+      "Reasoning": "The document title states 'SPOUSAL LIFETIME ACCESS TRUST' and describes an irrevocable trust where the spouse has access to trust assets during their lifetime, which are the defining characteristics of a SLAT.",
+      "Final Extracted Data": {
+        "Trust_Type": "SLAT (Spousal Lifetime Access Trust)"
+      }
+    }
+  },
+  {
+    "Instruction": "Identify the Trust_Type based on key characteristics in the document.",
+    "Input": "CHARITABLE REMAINDER UNITRUST\n\nThe Trustee shall pay to John and Mary Smith, during their joint lifetimes, an amount equal to 5% of the net fair market value of the trust assets, valued annually. Upon the death of the survivor, the remaining trust assets shall be distributed to the American Red Cross.",
+    "Output": {
+      "Reasoning": "The document identifies itself as a 'CHARITABLE REMAINDER UNITRUST' and describes paying a percentage of trust value annually to beneficiaries, with the remainder going to charity. This is a CRUT.",
+      "Final Extracted Data": {
+        "Trust_Type": "CRUT (Charitable Remainder Unitrust)"
+      }
+    }
+  },
+  {
+    "Instruction": "Identify the Trust_Type based on key characteristics in the document.",
+    "Input": "THE SMITH FAMILY 529 EDUCATION TRUST\n\nThis trust is established under Section 529 of the Internal Revenue Code for the purpose of funding qualified education expenses for the beneficiaries. Distributions shall be made only for qualified higher education expenses as defined in Section 529.",
+    "Output": {
+      "Reasoning": "The document references 'Section 529' multiple times and states the trust is for funding qualified education expenses, which are the defining features of a 529 Education Trust/Plan.",
+      "Final Extracted Data": {
+        "Trust_Type": "529 Education Trust"
+      }
+    }
+  },
+  {
+    "Instruction": "Identify the Trust_Type based on key characteristics in the document.",
+    "Input": "MARITAL TRUST AGREEMENT\n\nUpon the Grantor's death, the Trustee shall divide the trust into two parts: Trust A (Marital Trust) and Trust B (Family Trust). Trust A shall qualify for the unlimited marital deduction under IRC Section 2056. The surviving spouse shall receive all income from Trust A quarterly.",
+    "Output": {
+      "Reasoning": "The document explicitly states 'MARITAL TRUST' and references the marital deduction under IRC Section 2056, with mandatory income distributions to the surviving spouse. These are classic features of a Marital Trust.",
+      "Final Extracted Data": {
+        "Trust_Type": "Marital Trust"
+      }
+    }
+  },
+  {
+    "Instruction": "Identify the Trust_Type based on key characteristics in the document.",
+    "Input": "QUALIFIED TERMINABLE INTEREST PROPERTY TRUST\n\nThis trust qualifies for the marital deduction as a QTIP trust under Section 2056(b)(7). The surviving spouse shall receive all income at least annually. No person shall have the power to appoint any part of the trust property to anyone other than the surviving spouse during the spouse's lifetime.",
+    "Output": {
+      "Reasoning": "The document identifies itself as a 'QUALIFIED TERMINABLE INTEREST PROPERTY TRUST' and references QTIP qualification under Section 2056(b)(7), with mandatory income to surviving spouse. This is clearly a QTIP Trust.",
+      "Final Extracted Data": {
+        "Trust_Type": "QTIP Trust"
+      }
+    }
+  },
+  {
+    "Instruction": "Identify the Trust_Type when no specific type is explicitly stated.",
+    "Input": "TRUST AGREEMENT dated May 1, 2023 between John Smith as Settlor and Jane Smith as Trustee. This trust is established for the benefit of the Settlor's children. The Settlor transfers property irrevocably to the Trustee. This trust cannot be amended or revoked by the Settlor.",
+    "Output": {
+      "Reasoning": "While no specific trust type is named, the document states the trust is irrevocable and cannot be amended or revoked by the Settlor. Without other specific characteristics (like life insurance, annuities, or charitable purposes), this is a general Irrevocable Trust.",
+      "Final Extracted Data": {
+        "Trust_Type": "Irrevocable Trust"
+      }
+    }
+  },
+  {
+    "Instruction": "Identify the Trust_Type when multiple trust types are mentioned.",
+    "Input": "Upon the Grantor's death, the trust shall be divided as follows: The Marital Trust portion qualifying for the marital deduction, and the Family Trust portion using the applicable exclusion amount. The Marital Trust shall be administered as a QTIP trust.",
+    "Output": {
+      "Reasoning": "The document describes a trust that splits into multiple sub-trusts upon death: a Marital Trust (administered as QTIP) and a Family Trust. When multiple trust types exist, identify the primary structure. This appears to be an A-B Trust structure with QTIP provisions.",
+      "Final Extracted Data": {
+        "Trust_Type": "A-B Trust with QTIP provisions"
+      }
+    }
+  },
+  {
+    "Instruction": "Summarize Distribution_Provisions with clear formatting. Use bullet points where appropriate for readability. Maximum 12 sentences total. Focus on WHO gets distributions, WHEN they get them, and for WHAT purposes.",
+    "Input": "During the Grantor's lifetime, the Trustee distributes income and principal as the Grantor directs, and may also provide for the health, education, maintenance, and support of the Grantor's spouse, Susan Huntington. Upon the Grantor's death, the Trustee shall first pay debts, taxes, and expenses. Second, a marital share (maximum amount qualifying for federal estate tax marital deduction) is distributed to Susan Huntington. Third, the balance (family share) is held for Jerry Simons and Paula Huntington, in equal shares, per stirpes. No beneficiary may assign or encumber their interest, and interests are not subject to creditors' claims.",
+    "Output": {
+      "Reasoning": "I'll organize this into clear sections using bullets for the death distributions, which have multiple steps. The spendthrift provision is important enough to include.",
+      "Final Extracted Data": {
+        "Distribution_Provisions": "During the Grantor's lifetime:\n• Distributions to the Grantor as directed\n• Distributions to spouse Susan for health, education, maintenance, and support\n\nUpon the Grantor's death:\n• First: Pay all debts, taxes, and final expenses\n• Second: Marital share to Susan Huntington (maximum federal estate tax marital deduction)\n• Third: Remaining balance divided equally between Jerry Simons and Paula Huntington, per stirpes\n\nBeneficiary interests are protected from creditors and cannot be assigned or encumbered."
+      }
+    }
+  },
+  {
+    "Instruction": "Summarize Trustee_Powers_and_Duties with clear formatting and bullet points. Maximum 12 sentences.",
+    "Input": "The Trustee shall have all powers under Maryland law, including to retain, sell, invest, borrow, and distribute in cash or kind. The Trustee may employ agents, advisors, and counsel, and may delegate investment authority. The Trustee shall have the power to make elections under tax laws, to allocate receipts and disbursements between income and principal, and to merge or divide trusts. The Trustee may loan money to the trust estate, guarantee obligations, and enter into any transaction authorized by law. The Trustee shall act as a fiduciary and exercise reasonable care, skill, and caution. The Trustee must keep accurate records and provide annual accountings to beneficiaries.",
+    "Output": {
+      "Reasoning": "I'll organize the powers into categories using bullets for clarity. The fiduciary duties are important to include separately.",
+      "Final Extracted Data": {
+        "Trustee_Powers_and_Duties": "The Trustee has all powers granted under Maryland law, including:\n\nInvestment & Property Management:\n• Retain, sell, invest, and borrow against trust assets\n• Distribute property in cash or in kind\n• Loan money and guarantee obligations\n\nAdministrative Powers:\n• Employ agents, advisors, and legal counsel\n• Delegate investment authority\n• Make tax elections\n• Allocate between income and principal\n• Merge or divide trusts\n\nFiduciary Duties:\n• Act with reasonable care, skill, and caution\n• Maintain accurate records\n• Provide annual accountings to beneficiaries"
+      }
+    }
+  },
+  {
+    "Instruction": "Summarize Purpose_and_Intent with clear formatting. Use bullets if multiple purposes exist. Maximum 12 sentences.",
+    "Input": "This trust is established to provide for the orderly management and distribution of the Grantor's assets during lifetime and after death, avoiding the costs and delays of probate. The trust aims to minimize estate taxes through marital deduction planning and generation-skipping tax planning. The Grantor intends to provide financial security for the surviving spouse while preserving assets for children and future generations. The trust also serves to protect beneficiary interests from creditors and poor financial decisions through spendthrift provisions.",
+    "Output": {
+      "Reasoning": "Multiple purposes are stated, so I'll use bullets to organize them clearly.",
+      "Final Extracted Data": {
+        "Purpose_and_Intent": "The trust is established to:\n• Provide orderly management and distribution of assets during lifetime and after death\n• Avoid probate costs and delays\n• Minimize estate taxes through marital deduction and generation-skipping tax planning\n• Provide financial security for the surviving spouse\n• Preserve assets for children and future generations\n• Protect beneficiaries from creditors and poor financial decisions through spendthrift provisions"
+      }
+    }
+  },
+  {
+    "Instruction": "Summarize How_the_Trust_Works with clear formatting and organization. Maximum 12 sentences.",
+    "Input": "The Grantor transfers property to the Trustee to be held in trust. During the Grantor's lifetime, the trust is revocable and amendable. The Trustee manages and invests the trust assets according to the terms of the agreement. Income and principal are distributed to beneficiaries as specified. Upon the Grantor's death, the trust becomes irrevocable and is administered according to the distribution provisions. The trust may continue for the benefit of successive generations or terminate with outright distributions.",
+    "Output": {
+      "Reasoning": "I'll organize this chronologically to show the trust lifecycle clearly.",
+      "Final Extracted Data": {
+        "How_the_Trust_Works": "Initial Setup:\n• The Grantor transfers property to the Trustee to hold and manage in trust\n\nDuring Grantor's Lifetime:\n• Trust remains revocable and can be amended by the Grantor\n• Trustee manages and invests trust assets per the agreement terms\n• Income and principal distributed to beneficiaries as specified\n\nAfter Grantor's Death:\n• Trust becomes irrevocable\n• Assets distributed according to the distribution provisions\n• Trust may continue for future generations or terminate with outright distributions"
+      }
+    }
+  },
+  {
+    "Instruction": "Summarize Amendment_and_Termination provisions with clear formatting. Maximum 12 sentences.",
+    "Input": "The Grantor reserves the right to amend or revoke this trust in whole or in part at any time during the Grantor's lifetime by written instrument delivered to the Trustee. After the Grantor's death, this trust becomes irrevocable and cannot be amended. The trust shall terminate upon the death of the last beneficiary or when all trust assets have been distributed. Upon termination, any remaining assets shall be distributed to the then-living beneficiaries in equal shares.",
+    "Output": {
+      "Reasoning": "I'll separate the amendment rights from termination provisions for clarity.",
+      "Final Extracted Data": {
+        "Amendment_and_Termination": "Amendment Rights:\n• Grantor can amend or revoke the trust during lifetime\n• Changes must be in writing and delivered to the Trustee\n• Trust becomes irrevocable after Grantor's death\n\nTermination:\n• Trust terminates when the last beneficiary dies or all assets are distributed\n• Remaining assets go to then-living beneficiaries in equal shares"
+      }
+    }
+  },
+  {
+    "Instruction": "Summarize Special_Provisions with clear formatting. Include any unique or notable provisions. Maximum 12 sentences.",
+    "Input": "The trust includes a no-contest clause that disinherits any beneficiary who challenges the trust. Special needs provisions protect disabled beneficiaries' government benefits. The trust contains a Delaware directed trust structure with an investment advisor and distribution advisor. Pet care provisions allocate $50,000 for the care of the Grantor's dogs. The trust includes buy-sell provisions for the family business interests.",
+    "Output": {
+      "Reasoning": "Each special provision is distinct and important, so I'll use bullets to list them clearly.",
+      "Final Extracted Data": {
+        "Special_Provisions": "• No-contest clause: Any beneficiary who challenges the trust is disinherited\n• Special needs provisions to protect disabled beneficiaries' government benefits\n• Delaware directed trust structure with separate investment and distribution advisors\n• Pet care fund: $50,000 allocated for care of Grantor's dogs\n• Buy-sell provisions for family business interests"
+      }
+    }
+  },
+  {
+    "Instruction": "Extract ALL Summary fields with proper formatting. Each field should use bullet points where appropriate and be maximum 12 sentences. Focus on clarity and readability.",
+    "Input": "JERRY SIMONS 2012 TRUST... Purpose: This trust provides for management of assets during Jerry's life and orderly distribution at death while minimizing taxes... How it works: Jerry transfers assets to trustee who manages per agreement terms. Trust is irrevocable... Distributions: During life, trustee distributes to Jerry and descendants for health, education, support, and at trustee's discretion for any purpose. At death, trust divides per stirpes among descendants... Powers: Trustee has all powers under state law to invest, sell, borrow, hire advisors, make tax elections... Amendment: This trust is irrevocable and cannot be amended except by court order or with consent of all beneficiaries... Special: Trust includes generation-skipping tax planning, spendthrift provisions, and allows trustee to decant to new trusts...",
+    "Output": {
+      "Reasoning": "I'll format each Summary field with bullets and clear organization, keeping each under 12 sentences while maintaining completeness.",
+      "Final Extracted Data": {
+        "Purpose_and_Intent": "The trust serves to:\n• Provide professional management of assets during Jerry's lifetime\n• Ensure orderly distribution at death\n• Minimize estate and income taxes\n• Protect assets for future generations",
+        "How_the_Trust_Works": "• Jerry transfers assets to the trustee\n• Trustee manages assets according to agreement terms\n• Trust is irrevocable once established\n• Distributions made per the trust provisions\n• Trust continues for benefit of descendants",
+        "Distribution_Provisions": "During Jerry's Lifetime:\n• Distributions to Jerry and descendants for health, education, maintenance, and support\n• Discretionary distributions for any purpose (with trustee discretion)\n\nAt Jerry's Death:\n• Trust divides per stirpes among descendants\n• Each descendant's share held in separate trust\n• Distributions based on age or needs",
+        "Trustee_Powers_and_Duties": "Investment Powers:\n• Invest in any type of asset\n• Buy, sell, and exchange property\n• Borrow money and mortgage assets\n\nAdministrative Powers:\n• Hire advisors and agents\n• Make tax elections\n• Allocate between income and principal\n• Decant to new trusts",
+        "Amendment_and_Termination": "• Trust is irrevocable and cannot be amended by Jerry\n• Modifications allowed only by court order\n• All beneficiaries may consent to changes\n• Trust terminates when all assets distributed per terms",
+        "Special_Provisions": "• Generation-skipping tax planning included\n• Spendthrift provisions protect from creditors\n• Trustee may decant assets to new trusts\n• No-contest clause may apply"
+      }
+    }
+  },
+  {
+    "Instruction": "Format all Summary paragraph fields with clear, readable structure. Use bullets, numbered lists, or sections as appropriate. Maximum 12 sentences per field.",
+    "Input": "Complex trust with multiple provisions for distributions during grantor's life including mandatory income distributions quarterly and discretionary principal for emergencies. At death, complicated formula dividing between marital trust, credit shelter trust, and generation-skipping trusts. Trustee has extensive powers including ability to make S corp elections, manage closely-held businesses, and make loans. Special provisions for disabled beneficiaries, pet care, and vacation home management.",
+    "Output": {
+      "Reasoning": "Complex provisions need clear organization. I'll use sections and bullets to make each field easily scannable while keeping detail.",
+      "Final Extracted Data": {
+        "Distribution_Provisions": "Lifetime Distributions:\n• Mandatory: Quarterly income distributions to Grantor\n• Discretionary: Principal for emergencies and special needs\n• Healthcare: Unlimited for medical expenses\n\nDeath Distributions:\n• Step 1: Fund marital trust up to federal exemption\n• Step 2: Credit shelter trust for tax planning\n• Step 3: Generation-skipping trusts for grandchildren\n• Step 4: Remainder per stirpes to descendants",
+        "Trustee_Powers_and_Duties": "Business Management:\n• Operate closely-held businesses\n• Make S corporation elections\n• Vote shares and attend meetings\n\nFinancial Powers:\n• Make loans to beneficiaries\n• Extensive investment authority\n• Tax planning elections\n\nSpecial Authorities:\n• Manage real estate holdings\n• Hire professional managers\n• Distribute in cash or kind",
+        "Special_Provisions": "Unique Features:\n• Disabled beneficiary trusts preserve government benefits\n• Pet care fund: Dedicated funds for animal care\n• Vacation home: Special rules for family property use\n• Business succession: Detailed buy-sell provisions\n• Trustee protection: Broad exculpation clauses"
+      }
+    }
   }
 ]

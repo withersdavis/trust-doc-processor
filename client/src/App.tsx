@@ -53,21 +53,54 @@ function HomePage() {
 
   const loadJobData = async (jsonFile: string, sourceFile: string) => {
     try {
-      // Fetch the JSON result file
-      const jsonResponse = await fetch(`${API_URL}/api/results/${jsonFile}`);
-      if (!jsonResponse.ok) {
-        throw new Error('Failed to load result file');
-      }
-      const jsonData = await jsonResponse.json();
-      setResult(jsonData);
+      // Check if jsonFile is a full path or just a filename
+      if (jsonFile.startsWith('/')) {
+        // This is a full file path - extract the filename and load from server
+        const filename = jsonFile.split('/').pop();
+        if (!filename) {
+          throw new Error('Invalid file path');
+        }
+        
+        // Load the JSON file from the server's static results directory
+        const jsonResponse = await fetch(`${API_URL}/results/${filename}`);
+        if (!jsonResponse.ok) {
+          throw new Error('Failed to load result file');
+        }
+        const jsonData = await jsonResponse.json();
+        setResult(jsonData);
+        
+        // For local files, we need to load the original text differently
+        // Since we can't load it from the server, we'll use the source file ID if available
+        if (sourceFile.startsWith('file_')) {
+          // This looks like a file ID from the server
+          const textResponse = await fetch(`${API_URL}/api/files/${sourceFile}/text`);
+          if (textResponse.ok) {
+            const textData = await textResponse.text();
+            setOriginalText(textData);
+          } else {
+            // If we can't load the original text, set a placeholder
+            setOriginalText('Original document text not available for local file viewing.');
+          }
+        } else {
+          setOriginalText('Original document text not available for local file viewing.');
+        }
+      } else {
+        // This is a filename - use the API
+        const jsonResponse = await fetch(`${API_URL}/api/results/${jsonFile}`);
+        if (!jsonResponse.ok) {
+          throw new Error('Failed to load result file');
+        }
+        const jsonData = await jsonResponse.json();
+        setResult(jsonData);
 
-      // Fetch the original text file
-      const textResponse = await fetch(`${API_URL}/api/files/${sourceFile}/text`);
-      if (!textResponse.ok) {
-        throw new Error('Failed to load source file');
+        // Fetch the original text file
+        const textResponse = await fetch(`${API_URL}/api/files/${sourceFile}/text`);
+        if (!textResponse.ok) {
+          throw new Error('Failed to load source file');
+        }
+        const textData = await textResponse.text();
+        setOriginalText(textData);
       }
-      const textData = await textResponse.text();
-      setOriginalText(textData);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load job data');
       console.error('Error loading job:', err);

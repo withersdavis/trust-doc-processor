@@ -179,20 +179,51 @@ def process_document(document_text, api_key, instructions=None):
         extraction_instructions = instructions
     
     try:
-        # Call langextract with optimized parameters
-        # Balance speed and stability with moderate parallelism
+        # Call langextract with parameters from config file
         result = lx.extract(
             document_text,
             examples=examples,
-            model_id="gemini-2.5-flash",
+            model_id=params.get('model_id', 'gemini-2.5-flash'),
             temperature=params.get('temperature', 0.1),
-            extraction_passes=3,    # Multiple passes for better recall
-            max_workers=10,         # Parallel processing for speed
-            batch_length=10,        # Match workers for optimal parallelization
-            max_char_buffer=4000    # Smaller chunks for better accuracy
+            extraction_passes=params.get('extraction_passes', 3),
+            max_workers=params.get('max_workers', 10),
+            batch_length=params.get('batch_length', 10),
+            max_char_buffer=params.get('max_char_buffer', 4000)
         )
         
-        # Initialize structured result matching template
+        # Save original LangExtract output
+        original_langextract_output = {
+            "extractions": [],
+            "metadata": {
+                "model_id": params.get('model_id', 'gemini-2.5-flash'),
+                "extraction_passes": params.get('extraction_passes', 3),
+                "max_workers": params.get('max_workers', 10),
+                "batch_length": params.get('batch_length', 10),
+                "max_char_buffer": params.get('max_char_buffer', 4000),
+                "temperature": params.get('temperature', 0.1)
+            }
+        }
+        
+        # Capture raw extractions
+        if hasattr(result, 'extractions'):
+            for extraction in result.extractions:
+                # Get character positions from char_interval if available
+                char_start = 0
+                char_end = len(extraction.extraction_text)
+                if hasattr(extraction, 'char_interval') and extraction.char_interval:
+                    char_start = extraction.char_interval.start_pos
+                    char_end = extraction.char_interval.end_pos
+                
+                original_extraction = {
+                    "extraction_class": extraction.extraction_class,
+                    "extraction_text": extraction.extraction_text,
+                    "char_start": char_start,
+                    "char_end": char_end,
+                    "attributes": getattr(extraction, 'attributes', {})
+                }
+                original_langextract_output["extractions"].append(original_extraction)
+        
+        # Initialize structured result for transformed output
         structured_result = {
             "Basic_Information": {},
             "Summary": {},
@@ -200,14 +231,19 @@ def process_document(document_text, api_key, instructions=None):
             "citations": []
         }
         
-        # Process extractions
+        # Process extractions for transformation
         if hasattr(result, 'extractions'):
             for extraction in result.extractions:
                 # Get extraction data
                 class_name = extraction.extraction_class
                 text = extraction.extraction_text
-                start = getattr(extraction, 'char_start', 0)
-                end = getattr(extraction, 'char_end', len(text))
+                
+                # Get character positions from char_interval if available
+                start = 0
+                end = len(text)
+                if hasattr(extraction, 'char_interval') and extraction.char_interval:
+                    start = extraction.char_interval.start_pos
+                    end = extraction.char_interval.end_pos
                 
                 # Add to citations
                 citation = {
@@ -229,7 +265,11 @@ def process_document(document_text, api_key, instructions=None):
             default_value = fill_missing.get('default_value', 'Not specified')
             fill_missing_fields(structured_result, template, default_value)
         
-        return structured_result
+        # Return both original and transformed outputs
+        return {
+            "original_langextract": original_langextract_output,
+            "transformed": structured_result
+        }
         
     except Exception as e:
         import traceback
@@ -240,10 +280,21 @@ def process_document(document_text, api_key, instructions=None):
         }
 
 def map_to_template(class_name, text, result):
-    """Map extraction to template structure based on class name"""
+    """Map extraction to template structure based on class name with flexible role handling"""
     
     # Normalize class name
     normalized = class_name.lower().replace('_', '').replace(' ', '').replace('-', '')
+    
+    # Debug logging for trustee_powers
+    if 'trusteepower' in normalized:
+        import sys
+        print(f"DEBUG: Processing {class_name} -> normalized: {normalized}", file=sys.stderr)
+    
+    # Check for timing/condition modifiers
+    is_successor = any(term in normalized for term in ['successor', 'alternate', 'backup', 'secondary'])
+    is_contingent = any(term in normalized for term in ['contingent', 'upondeath', 'ifno', 'remainder'])
+    is_initial = any(term in normalized for term in ['initial', 'current', 'primary', 'first'])
+    is_lifetime = any(term in normalized for term in ['lifetime', 'living', 'duringlife'])
     
     # Basic Information mappings
     if 'trustname' in normalized:
@@ -255,15 +306,30 @@ def map_to_template(class_name, text, result):
     elif 'effectivedate' in normalized or 'trustdate' in normalized:
         result['Basic_Information']['Effective_Date'] = text
     
-    elif 'grantor' in normalized or 'settlor' in normalized or 'trustor' in normalized:
-        if 'successor' not in normalized:
+    # Flexible grantor/settlor/trustor handling
+    elif any(term in normalized for term in ['grantor', 'settlor', 'trustor']):
+        if not is_successor:
             if 'Grantor(s)' not in result['Basic_Information']:
                 result['Basic_Information']['Grantor(s)'] = []
             if text not in result['Basic_Information']['Grantor(s)']:
                 result['Basic_Information']['Grantor(s)'].append(text)
     
+    # Check for trustee powers BEFORE general trustee handling
+    elif 'trusteepowers' in normalized or 'trusteepower' in normalized:
+        if 'Trustee_Powers_and_Duties' not in result['Summary']:
+            result['Summary']['Trustee_Powers_and_Duties'] = text
+        else:
+            result['Summary']['Trustee_Powers_and_Duties'] += ' ' + text
+    
+    # Flexible trustee handling
     elif 'trustee' in normalized:
-        if 'successor' in normalized:
+        # Handle special trustees (e.g., "special_trustee_for_real_estate")
+        if 'special' in normalized or 'committee' in normalized:
+            # Store in Details as special provision
+            if 'Other_Provisions' not in result['Details']:
+                result['Details']['Other_Provisions'] = {}
+            result['Details']['Other_Provisions'][class_name] = text
+        elif is_successor:
             if 'Successor_Trustee(s)' not in result['Basic_Information']:
                 result['Basic_Information']['Successor_Trustee(s)'] = []
             if text not in result['Basic_Information']['Successor_Trustee(s)']:
@@ -274,17 +340,26 @@ def map_to_template(class_name, text, result):
             if text not in result['Basic_Information']['Trustee(s)']:
                 result['Basic_Information']['Trustee(s)'].append(text)
     
+    # Flexible beneficiary handling
     elif 'beneficiar' in normalized:
-        if 'primary' in normalized:
+        # Check for various beneficiary types
+        if is_lifetime or 'duringgrantorslife' in normalized:
+            # Lifetime beneficiary is typically the grantor themselves
             if 'Primary_Beneficiaries' not in result['Basic_Information']:
                 result['Basic_Information']['Primary_Beneficiaries'] = []
             if text not in result['Basic_Information']['Primary_Beneficiaries']:
                 result['Basic_Information']['Primary_Beneficiaries'].append(text)
-        elif 'contingent' in normalized:
+        elif is_contingent or 'remainder' in normalized or 'alternate' in normalized:
             if 'Contingent_Beneficiaries' not in result['Basic_Information']:
                 result['Basic_Information']['Contingent_Beneficiaries'] = []
             if text not in result['Basic_Information']['Contingent_Beneficiaries']:
                 result['Basic_Information']['Contingent_Beneficiaries'].append(text)
+        elif 'primary' in normalized or is_initial or 'upondeath' in normalized:
+            # Upon death beneficiaries that are not contingent
+            if 'Primary_Beneficiaries' not in result['Basic_Information']:
+                result['Basic_Information']['Primary_Beneficiaries'] = []
+            if text not in result['Basic_Information']['Primary_Beneficiaries']:
+                result['Basic_Information']['Primary_Beneficiaries'].append(text)
     
     # Summary mappings
     elif 'purpose' in normalized or 'intent' in normalized:
@@ -293,7 +368,7 @@ def map_to_template(class_name, text, result):
         else:
             result['Summary']['Purpose_and_Intent'] += ' ' + text
     
-    elif 'howthework' in normalized or 'operation' in normalized:
+    elif 'howthetrustwork' in normalized or 'howthetrust' in normalized or 'operation' in normalized:
         if 'How_the_Trust_Works' not in result['Summary']:
             result['Summary']['How_the_Trust_Works'] = text
         else:
@@ -306,6 +381,7 @@ def map_to_template(class_name, text, result):
             result['Summary']['Distribution_Provisions'] += ' ' + text
     
     elif 'power' in normalized or 'duties' in normalized:
+        # General power/duties that weren't caught by trustee_powers
         if 'Trustee_Powers_and_Duties' not in result['Summary']:
             result['Summary']['Trustee_Powers_and_Duties'] = text
         else:
@@ -356,6 +432,30 @@ def map_to_template(class_name, text, result):
     
     elif 'nocontest' in normalized:
         result['Details']['No-Contest_Clause'] = 'yes' if text else 'no'
+    
+    # Catch-all for specialized roles and positions
+    elif any(term in normalized for term in ['advisor', 'adviser', 'committee', 'protector', 'manager', 'advocate', 'guardian']):
+        # Store any specialized roles in Other_Provisions
+        if 'Other_Provisions' not in result['Details']:
+            result['Details']['Other_Provisions'] = {}
+        # Use the original class name as the key for clarity
+        result['Details']['Other_Provisions'][class_name] = text
+    
+    # Ultimate catch-all for any unmapped fields
+    else:
+        # Try to categorize based on content patterns
+        # If it looks like a summary/description (longer text), put it in Other_Summary_Provisions
+        if len(text) > 100:
+            if 'Other_Summary_Provisions' not in result['Summary']:
+                result['Summary']['Other_Summary_Provisions'] = {}
+            if not isinstance(result['Summary']['Other_Summary_Provisions'], dict):
+                result['Summary']['Other_Summary_Provisions'] = {}
+            result['Summary']['Other_Summary_Provisions'][class_name] = text
+        else:
+            # Shorter items go to Details/Other_Provisions
+            if 'Other_Provisions' not in result['Details']:
+                result['Details']['Other_Provisions'] = {}
+            result['Details']['Other_Provisions'][class_name] = text
 
 def fill_missing_fields(result, template, default_value):
     """Fill empty fields with default values based on template"""
@@ -373,7 +473,10 @@ def fill_missing_fields(result, template, default_value):
     if 'Summary' in template:
         for field in template['Summary']:
             if field not in result['Summary']:
-                result['Summary'][field] = default_value
+                if field == 'Other_Summary_Provisions':
+                    result['Summary'][field] = {}
+                else:
+                    result['Summary'][field] = default_value
     
     # Fill Details
     if 'Details' in template:

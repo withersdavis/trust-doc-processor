@@ -1,4 +1,4 @@
-# S3 Trust Document Processing Application - Session Summary
+# S3 Trust Document Processing Application
 
 ## GitHub Repository
 - **Repository**: https://github.com/withersdavis/trust-doc-processor
@@ -22,99 +22,30 @@
 ## Current Implementation Status
 
 ### Overview
-Created a full-stack application that processes trust documents using LangExtract with Gemini. The app extracts structured information following the trust_template.json structure with three sections: KEY_FIELDS, SUMMARY_PARAGRAPHS, and DETAILS.
+Full-stack application that processes trust documents using LangExtract with Gemini. 
+- **Template Structure**: Three sections - Basic_Information, Summary, Details
+- **Model**: Gemini 2.5 Flash with optimized parameters
+- **Python Service**: `/python/langextract_service.py` handles all extraction
+- **Few-Shot Examples**: 10 comprehensive examples guide extraction quality
 
-### Key Implementation Details
-
-#### 1. LangExtract Integration
-- **Uses ONLY LangExtract** - All content is extracted via LangExtract, no separate API calls
-- **Model**: Gemini 1.5 Flash (switched from Claude per user request)
-- **All content has citations** - Every piece of information is traceable to source document
-
-#### 2. SUMMARY_PARAGRAPHS Implementation
-- Extracts key sentences/passages from document (not generating new text)
-- Creates condensed summaries (up to 1000 chars) with citation references
-- Format: `extracted text [citation_key]` where `[citation_key]` links to full text in citations array
-- Example: `"The Trustee shall distribute..." [distribution_income]`
-
-#### 3. Current LangExtract Parameters (hardcoded in standardLangExtractService.ts)
-```javascript
-{
-  modelType: 'gemini',
-  modelId: 'gemini-1.5-flash',
-  apiKey: process.env.GEMINI_API_KEY,
-  formatType: FormatType.JSON,
-  temperature: 0.1,
-  fenceOutput: true,
-  useSchemaConstraints: false,
-  maxCharBuffer: 8000,
-  maxTokens: 4096,
-  debug: false,
-  extractionPasses: 1
-}
-```
-
-**Note**: The `/lib/langExtract_params.json` file exists but its parameters are NOT being used (except for `fill_missing`). Parameters are hardcoded instead.
-
-#### 4. File Structure
-- **Frontend**: `/client` - React with TypeScript, Tailwind CSS, shadcn/ui
-- **Backend**: `/server` - Express.js with TypeScript
-- **Templates**: `/lib/trust_template.json` - Defines extraction structure
-- **Parameters**: `/lib/langExtract_params.json` - Currently mostly unused
-- **Main Service**: `/server/src/services/standardLangExtractService.ts`
-
-### Key Functions in standardLangExtractService.ts
-
-1. **processDocumentWithStandardLangExtract** (lines 73-351)
-   - Main function that calls LangExtract
-   - Handles Gemini markdown-wrapped JSON responses
-   - Organizes extractions into template structure
-
-2. **processSummaryParagraphs** (lines 529-588)
-   - Creates condensed summaries with citations
-   - Maps extraction classes to summary sections
-   - Truncates to 1000 chars with citation references
-
-3. **Extraction Approach**
-   - Extracts key sentences for each topic (not full paragraphs)
-   - Examples: `trust_creation`, `distribution_income`, `trustee_investment_powers`
-   - Combines related extractions into summary paragraphs
-
-### Recent Changes & User Requirements
-
-1. **Must use ONLY LangExtract** - No separate Gemini API calls for summaries
-2. **All content must have citations** - Every piece of text traceable to source
-3. **Paragraph summaries should be condensed** - Not raw full text from document
-4. **Extended to 1000 char limit** for paragraph summaries (was 150)
-5. **Template structure must be respected** - Three sections as defined
-
-### Test Results
-- Successfully processes Jerry Simons Trust document
-- Generates structured output with all three sections populated
-- SUMMARY_PARAGRAPHS contains condensed text with citation references
-- All extracted content has corresponding citations with document locations
-
-### Potential Improvements to Consider
-1. Use parameters from `/lib/langExtract_params.json` instead of hardcoding
-2. Add configuration for summary length limits
-3. Implement client-side citation linking/highlighting
-4. Add support for multiple document types/templates
-
-### Environment Variables Required
-- `GEMINI_API_KEY` - Google Gemini API key for LangExtract
+### Key Configuration
+- **See LANGEXTRACT_CONFIG.md** for complete LangExtract configuration details
+- **Template**: `/lib/trust_template_new.json`
+- **Few-shot examples**: `/lib/langextract_few_shot_examples.json`
+- **Parameters**: Configured directly in Python service (10 workers, 3 passes)
 
 ### How to Run
-1. Backend: `cd /Users/w/Downloads/apps/s3/server && npm run dev`
-2. Frontend: `cd /Users/w/Downloads/apps/s3/client && npm start`
+1. Backend: `cd server && npm run dev`
+2. Frontend: `cd client && npm start`
 3. Access at: http://localhost:3000
 
 ### API Endpoints
-- POST `/api/upload` - Upload document (field name: "file")
+- POST `/api/upload` - Upload document
 - POST `/api/process/:fileId` - Process uploaded document
 - Results saved to `/results` folder
 
-## Last Working State
-- Application fully functional with LangExtract + Gemini
-- SUMMARY_PARAGRAPHS populated with condensed text and citations
-- All content traceable through citations array
-- 1000 character limit for summary paragraphs
+## Important Reminders
+- Do what has been asked; nothing more, nothing less
+- NEVER create files unless they're absolutely necessary
+- ALWAYS prefer editing an existing file to creating a new one
+- NEVER proactively create documentation files (*.md) or README files unless explicitly requested
