@@ -159,10 +159,10 @@ const ResultsView: React.FC<ResultsViewProps> = ({ result, originalText, jsonFil
     // Handle arrays
     if (Array.isArray(value)) {
       return (
-        <div className="ml-4 space-y-2">
+        <div className="ml-4">
           {value.map((item, index) => (
-            <div key={index} className="flex items-start flex-wrap">
-              <span className="text-blue-600 mr-2 mt-1 flex-shrink-0">•</span>
+            <div key={index} className="flex items-center flex-wrap">
+              <span className="hover:text-blue-600 mr-2 mt-1 flex-shrink-0">•</span>
               <div >
                 {renderValue(item, `${fieldPath}[${index}]`)}
               </div>
@@ -215,35 +215,52 @@ const ResultsView: React.FC<ResultsViewProps> = ({ result, originalText, jsonFil
 
     // For arrays, show citations inline with the array items
     if (Array.isArray(value)) {
-      // Render citation buttons
-      const citationButtons = citations.map((citation, index) => {
-        const uniqueId = `${citationKey}_${index}`;
-
-        return (
-          <button
-            key={uniqueId}
-            className="hover:text-blue-600"
-            onClick={() => handleCitationClick(uniqueId)}
-            title={`View: ${citation.full_text || citation.text || citationKey}`}
-          >
-            <span className="font-medium">
-              <sup>{citations.length > 1 ? ` [${index + 1}]` : '[1]'}</sup>
-            </span>
-          </button>
-        );
-      });
-
       return (
-        <div className="flex items-start flex-wrap gap-1">
-          <div >{valueContent}</div>
-          <div className="flex flex-col gap-1 space-y-1">
-            {citationButtons}
-          </div>
+        <div className="ml-4">
+          {value.map((item, index) => {
+            const itemValue = renderValue(item, `${fieldPath}[${index}]`);
+
+            // Each array item gets its own citation (if available)
+            const itemCitation = citations[index];
+            const hasItemCitation = itemCitation !== undefined;
+
+            return (
+              <div key={index} className="flex items-start flex-wrap">
+                <span className="text-blue-600 mr-2 flex-shrink-0">•</span>
+                <div className="flex items-start flex-wrap gap-1">
+                  {hasItemCitation ? (
+                    // Make the item content clickable if it has a citation
+                    <>
+                      <button
+                        className="text-gray-900 hover:!text-blue-600 hover:underline text-left hover:[&_*]:!text-blue-600"
+                        onClick={() => handleCitationClick(`${citationKey}_${index}`)}
+                        title={`View citation: ${itemCitation.full_text || itemCitation.text || citationKey}`}
+                      >
+                        {itemValue}
+                      </button>
+                      <button
+                        className="hover:text-blue-600"
+                        onClick={() => handleCitationClick(`${citationKey}_${index}`)}
+                        title={`View: ${itemCitation.full_text || itemCitation.text || citationKey}`}
+                      >
+                        <span className="font-medium">
+                          <sup>[{index + 1}]</sup>
+                        </span>
+                      </button>
+                    </>
+                  ) : (
+                    // No citation for this item - just show the value
+                    <div>{itemValue}</div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
         </div>
       );
     }
 
-    // For non-array values, show citations inline
+    // For non-array values, make the entire content clickable
     const citationButtons = citations.map((citation, index) => {
       const uniqueId = `${citationKey}_${index}`;
 
@@ -263,7 +280,14 @@ const ResultsView: React.FC<ResultsViewProps> = ({ result, originalText, jsonFil
 
     return (
       <div className="flex items-start flex-wrap gap-1">
-        <div className="flex max-w-[93%] text-justify">{valueContent}</div>
+        {/* Make the entire value content clickable */}
+        <button
+          className="text-gray-900 hover:!text-blue-600 hover:underline text-left max-w-[93%] hover:[&_*]:!text-blue-600"
+          onClick={() => handleCitationClick(`${citationKey}_0`)}
+          title={`View citation: ${citations[0]?.full_text || citations[0]?.text || citationKey}`}
+        >
+          <div className="text-justify">{valueContent}</div>
+        </button>
         <div className="flex flex-wrap gap-1">
           {citationButtons}
         </div>
@@ -328,7 +352,7 @@ const ResultsView: React.FC<ResultsViewProps> = ({ result, originalText, jsonFil
       case 'bullet':
         return (
           <div key={index} className="flex items-start">
-            <span className="text-blue-600 mr-2 mt-1 flex-shrink-0">•</span>
+            <span className="text-blue-600 mr-2 flex-shrink-0">•</span>
             <span className="flex-1 text-sm leading-relaxed">{renderTextWithCitations(content, fieldPath)}</span>
           </div>
         );
@@ -336,7 +360,7 @@ const ResultsView: React.FC<ResultsViewProps> = ({ result, originalText, jsonFil
       case 'number':
         return (
           <div key={index} className="flex items-start">
-            <span className="text-blue-600 mr-2 mt-1 flex-shrink-0 font-medium">
+            <span className="text-blue-600 mr-2 flex-shrink-0 font-medium">
               {index + 1}.
             </span>
             <span className="flex-1 text-sm leading-relaxed">{renderTextWithCitations(content, fieldPath)}</span>
@@ -359,7 +383,7 @@ const ResultsView: React.FC<ResultsViewProps> = ({ result, originalText, jsonFil
 
       case 'paragraph':
         return (
-          <p key={index} className="text-sm leading-relaxed text-gray-800 mb-2">
+          <p key={index} className="text-sm leading-relaxed mb-2">
             {renderTextWithCitations(content, fieldPath)}
           </p>
         );
