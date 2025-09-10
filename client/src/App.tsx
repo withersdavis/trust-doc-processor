@@ -1,263 +1,207 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate, useSearchParams } from 'react-router-dom';
 import { FileUpload } from './components/FileUpload';
+import { ResultsDisplay } from './components/ResultsDisplay';
 import ResultsView from './components/ResultsView';
-import { FileText, AlertCircle } from 'lucide-react';
-import { Card, CardContent } from './components/ui/card';
+import { ProcessingResult } from './types';
+import { API_ENDPOINTS } from './config';
+import './index.css';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
-
-interface ProcessingResult {
-  metadata: {
-    processed_date: string;
-    original_filename: string;
-    processing_time_ms: number;
-  };
-  extraction: {
-    KEY_FIELDS: any;
-    SUMMARY_PARAGRAPHS: any;
-    DETAILS: any;
-    citations?: Array<any>;
-  };
-  citations: Array<{
-    text: string;
-    class: string;
-    location?: {
-      start: number;
-      end: number;
-      length: number;
-    };
-    confidence?: number;
-    attributes?: any;
-  }>;
-}
-
-function HomePage() {
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+function App() {
   const [result, setResult] = useState<ProcessingResult | null>(null);
   const [originalText, setOriginalText] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Check if we have URL parameters for a job
+  // Get URL parameters
+  const urlParams = new URLSearchParams(window.location.search);
+  const jsonFile = urlParams.get('json');
+  const sourceFile = urlParams.get('source');
+
+  // Load job data from URL parameters
   useEffect(() => {
-    const jsonFile = searchParams.get('json');
-    const sourceFile = searchParams.get('source');
-    
-    if (jsonFile && sourceFile) {
-      // Load the existing job data
-      loadJobData(jsonFile, sourceFile);
-    }
-  }, [searchParams]);
+    const loadJobData = async () => {
+      if (jsonFile) {
+        try {
+          setIsLoading(true);
+          setError(null);
 
-  const loadJobData = async (jsonFile: string, sourceFile: string) => {
-    try {
-      // Check if jsonFile is a full path or just a filename
-      if (jsonFile.startsWith('/')) {
-        // This is a full file path - extract the filename and load from server
-        const filename = jsonFile.split('/').pop();
-        if (!filename) {
-          throw new Error('Invalid file path');
-        }
-        
-        // Load the JSON file from the server's static results directory
-        const jsonResponse = await fetch(`${API_URL}/results/${filename}`);
-        if (!jsonResponse.ok) {
-          throw new Error('Failed to load result file');
-        }
-        const jsonData = await jsonResponse.json();
-        setResult(jsonData);
-        
-        // For local files, we need to load the original text differently
-        // Since we can't load it from the server, we'll use the source file ID if available
-        if (sourceFile.startsWith('file_')) {
-          // This looks like a file ID from the server
-          const textResponse = await fetch(`${API_URL}/api/files/${sourceFile}/text`);
-          if (textResponse.ok) {
-            const textData = await textResponse.text();
-            setOriginalText(textData);
-          } else {
-            // If we can't load the original text, set a placeholder
-            setOriginalText('Original document text not available for local file viewing.');
+          // Load JSON data
+          const response = await fetch(`${API_ENDPOINTS.LOAD_JOB}?json=${encodeURIComponent(jsonFile)}`);
+          if (!response.ok) {
+            throw new Error(`Failed to load job data: ${response.status} ${response.statusText}`);
           }
-        } else {
-          setOriginalText('Original document text not available for local file viewing.');
-        }
-      } else {
-        // This is a filename - use the API
-        const jsonResponse = await fetch(`${API_URL}/api/results/${jsonFile}`);
-        if (!jsonResponse.ok) {
-          throw new Error('Failed to load result file');
-        }
-        const jsonData = await jsonResponse.json();
-        setResult(jsonData);
+          const jsonData = await response.json();
 
-        // Fetch the original text file
-        const textResponse = await fetch(`${API_URL}/api/files/${sourceFile}/text`);
-        if (!textResponse.ok) {
-          throw new Error('Failed to load source file');
+          // Load source text
+          let sourceText = '';
+          if (sourceFile) {
+            const textResponse = await fetch(`${API_ENDPOINTS.LOAD_SOURCE}?source=${encodeURIComponent(sourceFile)}`);
+            if (!textResponse.ok) {
+              console.error('Failed to load source file:', textResponse.status, textResponse.statusText);
+              sourceText = 'Original document text not available - file may have expired or been deleted.';
+            } else {
+              sourceText = await textResponse.text();
+            }
+          }
+
+          // Wrap the data in the expected structure
+          setResult({
+            success: true,
+            filename: sourceFile || 'Unknown file',
+            result: jsonData
+          });
+          setOriginalText(sourceText);
+        } catch (err) {
+          console.error('Error loading job data:', err);
+          setError(err instanceof Error ? err.message : 'Failed to load job data');
+        } finally {
+          setIsLoading(false);
         }
-        const textData = await textResponse.text();
-        setOriginalText(textData);
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load job data');
-      console.error('Error loading job:', err);
-    }
-  };
+    };
+
+    loadJobData();
+  }, [jsonFile, sourceFile]);
 
   const handleFileSelect = async (file: File) => {
-    // Check if file is .txt
-    if (!file.name.endsWith('.txt')) {
-      setError('Please upload a .txt file only');
-      return;
-    }
+    if (!file) return;
 
-    setIsProcessing(true);
+    setIsLoading(true);
     setError(null);
-    setResult(null);
 
     try {
       // Upload file
       const formData = new FormData();
       formData.append('file', file);
 
-      const uploadResponse = await fetch(`${API_URL}/api/upload`, {
+      const uploadResponse = await fetch(API_ENDPOINTS.UPLOAD, {
         method: 'POST',
         body: formData,
       });
 
       if (!uploadResponse.ok) {
-        const errorData = await uploadResponse.json();
-        throw new Error(errorData.error || 'Failed to upload file');
+        throw new Error(`Upload failed: ${uploadResponse.status} ${uploadResponse.statusText}`);
       }
 
       const uploadData = await uploadResponse.json();
+      console.log('Upload response:', uploadData);
 
-      // Process file
-      const processResponse = await fetch(
-        `${API_URL}/api/process/${uploadData.fileId}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      // Process file - send fileId as URL parameter
+      const processResponse = await fetch(`${API_ENDPOINTS.PROCESS}/${uploadData.fileId}`, {
+        method: 'POST',
+      });
 
       if (!processResponse.ok) {
-        const errorData = await processResponse.json();
-        throw new Error(errorData.error || 'Failed to process document');
+        throw new Error(`Processing failed: ${processResponse.status} ${processResponse.statusText}`);
       }
 
       const processData = await processResponse.json();
-      
-      // Navigate to the results page with URL parameters
-      navigate(`/?json=${processData.filename}&source=${uploadData.fileId}`);
-      
-      // Set the result and original text
-      setResult(processData.result);
-      
-      // Read the original text file
-      const textResponse = await fetch(`${API_URL}/api/files/${uploadData.fileId}/text`);
-      if (textResponse.ok) {
+      console.log('Process response:', processData);
+
+      // Set the result with the full response structure
+      setResult(processData);
+
+      // Load original text using the fileId
+      const textResponse = await fetch(`${API_ENDPOINTS.FILES_TEXT}/${uploadData.fileId}/text`);
+      if (!textResponse.ok) {
+        console.error('Failed to load source file:', textResponse.status, textResponse.statusText);
+        setOriginalText('Original document text not available - file may have expired or been deleted.');
+      } else {
         const text = await textResponse.text();
         setOriginalText(text);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An unexpected error occurred');
-      console.error('Processing error:', err);
+      console.error('Error processing file:', err);
+      setError(err instanceof Error ? err.message : 'An error occurred while processing the file');
     } finally {
-      setIsProcessing(false);
+      setIsLoading(false);
     }
   };
 
+  const handleBack = () => {
+    setResult(null);
+    setOriginalText('');
+    setError(null);
+    // Clear URL parameters
+    window.history.replaceState({}, '', window.location.pathname);
+  };
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Processing document...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto p-6">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+            <h2 className="text-lg font-semibold text-red-800 mb-2">Error</h2>
+            <p className="text-red-600">{error}</p>
+          </div>
+          <button
+            onClick={handleBack}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   // Show results view if we have data
   if (result && originalText) {
-    const jsonFile = searchParams.get('json') || '';
-    const sourceFile = searchParams.get('source') || '';
-    
+    const jsonFile = new URLSearchParams(window.location.search).get('json') || '';
+    const sourceFile = new URLSearchParams(window.location.search).get('source') || '';
+
     return (
       <ResultsView
-        result={{
-          ...result.extraction,
-          citations: result.citations
-        }}
+        result={result}
         originalText={originalText}
         jsonFile={jsonFile}
         sourceFile={sourceFile}
-        onBack={() => {
-          navigate('/');
-          setResult(null);
-          setOriginalText('');
-          setError(null);
-        }}
+        onBack={handleBack}
       />
     );
   }
 
+  // Show file upload if we have a result but no original text (for results display)
+  if (result) {
+    return (
+      <ResultsDisplay
+        result={result}
+        filename={result.filename}
+        onBack={handleBack}
+      />
+    );
+  }
+
+  // Show file upload by default
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center space-x-3">
-            <FileText className="h-8 w-8 text-primary" />
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">
-                Trust Document Processor
-              </h1>
-              <p className="text-sm text-gray-600">
-                Extract structured information from trust documents (.txt files only)
-              </p>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {error && (
-          <Card className="mb-6 border-destructive">
-            <CardContent className="p-4">
-              <div className="flex items-center space-x-2">
-                <AlertCircle className="h-5 w-5 text-destructive" />
-                <p className="text-destructive">{error}</p>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        <FileUpload onFileSelect={handleFileSelect} isProcessing={isProcessing} />
-
-        {isProcessing && (
-          <div className="mt-8 text-center">
-            <div className="inline-flex items-center space-x-2 text-gray-600">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
-              <span>Processing document with LangExtract (Gemini)...</span>
-            </div>
-            <p className="text-sm text-gray-500 mt-2">
-              This may take a few moments depending on document size
+      <div className="container mx-auto px-4 py-8">
+        <div className="max-w-2xl mx-auto">
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+              Trust Document Processor
+            </h1>
+            <p className="text-lg text-gray-600 mb-8">
+              Upload a trust document to extract structured information using AI
             </p>
           </div>
-        )}
-      </main>
-
-      <footer className="mt-auto py-6 text-center text-sm text-gray-500">
-        <p>
-          Powered by LangExtract with Gemini • Results saved to /results folder
-        </p>
-      </footer>
+          <FileUpload onFileSelect={handleFileSelect} />
+        </div>
+      </div>
     </div>
-  );
-}
-
-function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-      </Routes>
-    </Router>
   );
 }
 

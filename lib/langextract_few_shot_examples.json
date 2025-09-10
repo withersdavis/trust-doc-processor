@@ -113,11 +113,16 @@
     "Output": {
       "Final Extracted Data": {
         "initial_trustee": "Carl Huntington",
-        "successor_trustee": "Susan Huntington",
-        "successor_trustee_alternate": "Jerry Simons",
+        "successor_trustees": [
+          "Susan Huntington",
+          "Jerry Simons"
+        ],
         "trust_protector": "John Doe",
         "investment_advisor": "ABC Wealth Management",
-        "distribution_committee": ["Mary Jones", "Bob Smith"],
+        "distribution_committee": [
+          "Mary Jones",
+          "Bob Smith"
+        ],
         "contingent_beneficiary": "Paula Huntington",
         "contingent_beneficiary_descendants": "descendants of Paula Huntington"
       }
@@ -130,7 +135,10 @@
       "Final Extracted Data": {
         "lifetime_beneficiary": "Grantor",
         "primary_beneficiary_upon_death": "Susan (surviving spouse)",
-        "contingent_beneficiaries": ["John", "Jane"],
+        "contingent_beneficiaries": [
+          "John",
+          "Jane"
+        ],
         "contingent_beneficiary_alternates": "descendants per stirpes",
         "remainder_beneficiary": "Red Cross"
       }
@@ -155,7 +163,11 @@
     "Output": {
       "Final Extracted Data": {
         "special_trustee_for_real_estate": "Robert Johnson",
-        "trust_investment_committee_members": ["Sarah Williams", "Michael Chen", "Jennifer Davis"],
+        "trust_investment_committee_members": [
+          "Sarah Williams",
+          "Michael Chen",
+          "Jennifer Davis"
+        ],
         "healthcare_advocate": "Dr. Emily Brown",
         "educational_trust_advisor": "Professor James Wilson",
         "farm_operations_manager": "Tom Anderson"
