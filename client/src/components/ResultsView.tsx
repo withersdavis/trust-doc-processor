@@ -128,6 +128,100 @@ const ResultsView: React.FC<ResultsViewProps> = ({ result, originalText, jsonFil
     setHighlightedText(formattedDocument);
   };
 
+  const renderSummaryWithInterpolatedCitations = (value: any, citationKey: string): React.ReactElement => {
+    // Handle both array and string formats
+    let extractionsArray: any[] = [];
+    
+    if (Array.isArray(value)) {
+      extractionsArray = value;
+    } else if (typeof value === 'string') {
+      // For backwards compatibility with single string extractions
+      // Split on periods to create pseudo-multiple extractions
+      const sentences = value.split('.').map(s => s.trim()).filter(s => s.length > 0);
+      extractionsArray = sentences.map(sentence => sentence + '.');
+    } else {
+      // Fallback for any other format
+      extractionsArray = [value];
+    }
+    
+    // Get citations for the specified field
+    const citations = citationsByKey.get(citationKey) || [];
+    
+    // Intelligently interpolate text fragments into flowing sentences
+    const elements: React.ReactElement[] = [];
+    
+    if (extractionsArray.length > 1) {
+      // Multiple extractions - combine into flowing text with interpolated citations
+      const textParts: React.ReactElement[] = [];
+      
+      extractionsArray.forEach((extraction, index) => {
+        const text = (extraction.text || extraction).toString().trim();
+        
+        // Add the text content with citation as single clickable element
+        if (index < citations.length) {
+          const citation = citations[index];
+          const uniqueId = `${citationKey}_${index}`;
+          
+          textParts.push(
+            <span
+              key={`text_cite_${index}`}
+              className="text-gray-900 hover:text-blue-600 hover:underline cursor-pointer"
+              onClick={() => handleCitationClick(uniqueId)}
+              title={`View citation: ${citation?.full_text || citation?.text || citation?.citation_key || 'View source'}`}
+            >
+              {text} <sup className="font-medium ml-1">[{index + 1}]</sup>
+            </span>
+          );
+        } else {
+          // No citation available, show as regular text
+          textParts.push(
+            <span key={`text_${index}`}>{text}</span>
+          );
+        }
+        
+        // Add space between parts (except last)
+        if (index < extractionsArray.length - 1) {
+          textParts.push(<span key={`space_${index}`}> </span>);
+        }
+      });
+      
+      // Add final period if needed
+      const lastExtraction = extractionsArray[extractionsArray.length - 1];
+      const lastText = (lastExtraction?.text || lastExtraction || '').toString().trim();
+      if (!lastText.endsWith('.') && !lastText.endsWith('!') && !lastText.endsWith('?')) {
+        textParts.push(<span key="final_period">.</span>);
+      }
+      
+      elements.push(...textParts);
+      
+    } else {
+      // Single extraction - handle normally
+      const text = extractionsArray[0]?.text || extractionsArray[0] || '';
+      
+      if (citations.length > 0) {
+        const uniqueId = `${citationKey}_0`;
+        const citation = citations[0];
+        
+        // Make text with citation clickable as single element
+        elements.push(
+          <span
+            key="single_text_cite"
+            className="text-gray-900 hover:text-blue-600 hover:underline cursor-pointer"
+            onClick={() => handleCitationClick(uniqueId)}
+            title={`View citation: ${citation?.full_text || citation?.text || citation?.citation_key || 'View source'}`}
+          >
+            {text} <sup className="font-medium ml-1">[1]</sup>
+          </span>
+        );
+      } else {
+        // No citations, show as regular text
+        elements.push(<span key="single_text">{text}</span>);
+      }
+    }
+    
+    return <div className="text-justify">{elements}</div>;
+  };
+
 
   const renderValue = (value: any, fieldPath: string = ''): React.ReactElement => {
     if (value === null || value === undefined) {
@@ -182,6 +276,21 @@ const ResultsView: React.FC<ResultsViewProps> = ({ result, originalText, jsonFil
   };
 
   const renderValueWithCitations = (value: any, fieldPath: string = '', typeOfContent: string): React.ReactElement => {
+    // Special handling for Summary fields with interpolated citations
+    const summaryFields = {
+      'Purpose_and_Intent': 'purpose_and_intent',
+      'How_the_Trust_Works': 'how_the_trust_works', 
+      'Distribution_Provisions': 'distribution_provisions',
+      'Trustee_Powers_and_Duties': 'trustee_powers_and_duties',
+      'Amendment_and_Termination': 'amendment_and_termination',
+      'Special_Provisions': 'special_provisions'
+    };
+    
+    if (fieldPath in summaryFields) {
+      const citationKey = summaryFields[fieldPath as keyof typeof summaryFields];
+      return renderSummaryWithInterpolatedCitations(value, citationKey);
+    }
+
     // Get citations for this field
     const fieldToCitationMap: Record<string, string> = {
       'Trust_Name': 'trust_name',

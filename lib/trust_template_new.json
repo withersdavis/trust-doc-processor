@@ -10,12 +10,12 @@
     "Contingent_Beneficiaries": ["string"]
   },
   "Summary": {
-    "Purpose_and_Intent": "string",
-    "How_the_Trust_Works": "string",
-    "Distribution_Provisions": "string",
-    "Trustee_Powers_and_Duties": "string",
-    "Amendment_and_Termination": "string",
-    "Special_Provisions": "string",
+    "Purpose_and_Intent": ["object"],
+    "How_the_Trust_Works": ["object"],
+    "Distribution_Provisions": ["object"],
+    "Trustee_Powers_and_Duties": ["object"],
+    "Amendment_and_Termination": ["object"],
+    "Special_Provisions": ["object"],
     "Other_Summary_Provisions": "string"
   },
   "Details": {

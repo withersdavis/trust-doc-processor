@@ -123,9 +123,24 @@ def create_examples_from_few_shot():
                     # Handle both string and dict formats
                     if isinstance(summary_data, dict):
                         # Extract each field from the dictionary
+                        # Handle arrays and duplicate keys by collecting all values
+                        class_values = {}
+                        
                         for key, value in summary_data.items():
-                            if value and value != 'N/A':
-                                class_name = key.replace(' ', '_').lower()
+                            class_name = key.replace(' ', '_').lower()
+                            if class_name not in class_values:
+                                class_values[class_name] = []
+                            
+                            if isinstance(value, list):
+                                for v in value:
+                                    if v and v != 'N/A':
+                                        class_values[class_name].append(v)
+                            elif value and value != 'N/A':
+                                class_values[class_name].append(value)
+                        
+                        # Create extractions for all collected values
+                        for class_name, values in class_values.items():
+                            for value in values:
                                 extractions.append(
                                     lx.data.Extraction(
                                         extraction_class=class_name,
@@ -314,15 +329,8 @@ def map_to_template(class_name, text, result):
             if text not in result['Basic_Information']['Grantor(s)']:
                 result['Basic_Information']['Grantor(s)'].append(text)
     
-    # Check for trustee powers BEFORE general trustee handling
-    elif 'trusteepowers' in normalized or 'trusteepower' in normalized:
-        if 'Trustee_Powers_and_Duties' not in result['Summary']:
-            result['Summary']['Trustee_Powers_and_Duties'] = text
-        else:
-            result['Summary']['Trustee_Powers_and_Duties'] += ' ' + text
-    
-    # Flexible trustee handling
-    elif 'trustee' in normalized:
+    # Flexible trustee handling (exclude power-related terms)
+    elif 'trustee' in normalized and not ('power' in normalized or 'duties' in normalized):
         # Handle special trustees (e.g., "special_trustee_for_real_estate")
         if 'special' in normalized or 'committee' in normalized:
             # Store in Details as special provision
@@ -363,41 +371,70 @@ def map_to_template(class_name, text, result):
     
     # Summary mappings
     elif 'purpose' in normalized or 'intent' in normalized:
+        # Store multiple extractions as array to enable interpolated citations
         if 'Purpose_and_Intent' not in result['Summary']:
-            result['Summary']['Purpose_and_Intent'] = text
-        else:
-            result['Summary']['Purpose_and_Intent'] += ' ' + text
+            result['Summary']['Purpose_and_Intent'] = []
+        
+        # Add this extraction as a separate item
+        result['Summary']['Purpose_and_Intent'].append({
+            'text': text,
+            'citation_key': class_name
+        })
     
-    elif 'howthetrustwork' in normalized or 'howthetrust' in normalized or 'operation' in normalized:
+    elif 'howthetrustworks' in normalized or 'howthetrust' in normalized or 'operation' in normalized:
+        # Store multiple extractions as array to enable interpolated citations
         if 'How_the_Trust_Works' not in result['Summary']:
-            result['Summary']['How_the_Trust_Works'] = text
-        else:
-            result['Summary']['How_the_Trust_Works'] += ' ' + text
+            result['Summary']['How_the_Trust_Works'] = []
+        
+        # Add this extraction as a separate item
+        result['Summary']['How_the_Trust_Works'].append({
+            'text': text,
+            'citation_key': class_name
+        })
     
     elif 'distribution' in normalized:
+        # Store multiple extractions as array to enable interpolated citations
         if 'Distribution_Provisions' not in result['Summary']:
-            result['Summary']['Distribution_Provisions'] = text
-        else:
-            result['Summary']['Distribution_Provisions'] += ' ' + text
+            result['Summary']['Distribution_Provisions'] = []
+        
+        # Add this extraction as a separate item
+        result['Summary']['Distribution_Provisions'].append({
+            'text': text,
+            'citation_key': class_name
+        })
     
     elif 'power' in normalized or 'duties' in normalized:
-        # General power/duties that weren't caught by trustee_powers
+        # Store multiple extractions as array to enable interpolated citations
         if 'Trustee_Powers_and_Duties' not in result['Summary']:
-            result['Summary']['Trustee_Powers_and_Duties'] = text
-        else:
-            result['Summary']['Trustee_Powers_and_Duties'] += ' ' + text
+            result['Summary']['Trustee_Powers_and_Duties'] = []
+        
+        # Add this extraction as a separate item
+        result['Summary']['Trustee_Powers_and_Duties'].append({
+            'text': text,
+            'citation_key': class_name
+        })
     
     elif 'amendment' in normalized or 'termination' in normalized:
+        # Store multiple extractions as array to enable interpolated citations
         if 'Amendment_and_Termination' not in result['Summary']:
-            result['Summary']['Amendment_and_Termination'] = text
-        else:
-            result['Summary']['Amendment_and_Termination'] += ' ' + text
+            result['Summary']['Amendment_and_Termination'] = []
+        
+        # Add this extraction as a separate item
+        result['Summary']['Amendment_and_Termination'].append({
+            'text': text,
+            'citation_key': class_name
+        })
     
     elif 'special' in normalized and 'provision' in normalized:
+        # Store multiple extractions as array to enable interpolated citations
         if 'Special_Provisions' not in result['Summary']:
-            result['Summary']['Special_Provisions'] = text
-        else:
-            result['Summary']['Special_Provisions'] += ' ' + text
+            result['Summary']['Special_Provisions'] = []
+        
+        # Add this extraction as a separate item
+        result['Summary']['Special_Provisions'].append({
+            'text': text,
+            'citation_key': class_name
+        })
     
     # Details mappings
     elif 'taxid' in normalized or 'ein' in normalized:
@@ -471,10 +508,12 @@ def fill_missing_fields(result, template, default_value):
     
     # Fill Summary
     if 'Summary' in template:
-        for field in template['Summary']:
+        for field, field_type in template['Summary'].items():
             if field not in result['Summary']:
                 if field == 'Other_Summary_Provisions':
                     result['Summary'][field] = {}
+                elif isinstance(field_type, list):
+                    result['Summary'][field] = []
                 else:
                     result['Summary'][field] = default_value
     

@@ -1,10 +1,19 @@
 [
   {
-    "Instruction": "Summarize Current Benefits of Trust",
+    "Instruction": "Summarize Current Benefits of Trust. Create multiple extraction entries to enable interpolated citations. Paraphrase complex legal language into clear sentences.",
     "Input": "The Trustees shall distribute to any one or more of JERRY SIMONS and the descendants of JERRY SIMONS as much of the net income and/or principal of the trust as the Trustees may at any time and from time to time determine, in such amounts or proportions as the Trustees may from time to time select, for the recipient's health, education, maintenance and support, in his or her accustomed manner of living.\r\nThe Trustees shall distribute to any one or more of JERRY SIMONS and the descendants of JERRY SIMONS as much of the net income and/or principal of the trust as the Trustees (excluding, however, any Interested Trustee) may at any time and from time to time determine, in such amounts or proportions as the Trustees (excluding, however, any Interested Trustee) may from time to time select, for any purpose,\r\nAny net income not so distributed shall be accumulated and annually added to principal.\r\nWithout limiting the Trustees' discretion, the Trustees may consider the needs of JERRY SIMONS as more important than the needs of the descendants of JERRY SIMONS or of any other beneficiary.",
     "Output": {
-      "Reasoning": "The first paragraph describes a distribution for \"health, education, maintenance, and support,\" which can be summarized as \"For Basic Needs.\" This paragraph also states that \"the Trustees may... determine\" the amounts, implying all trustees can make the decisions.\r\nThe second paragraph describes a separate distribution for \"any purpose,\" but it explicitly excludes \"any Interested Trustee\" (defined elsewhere as Jerry Simons). This is a key restriction that prevents self-dealing.\r\nThe third paragraph explains what happens to undistributed income, stating it \"shall be accumulated and annually added to principal.\" This is a key rule of the trust.\r\nThe final paragraph states the trustees \"may consider the needs of JERRY SIMONS as more important than the needs of the descendants,\" which is an important discretionary power to include.\r\nThe final output synthesizes these four key points into a clear and concise summary for a non-legal audience.",
-      "Final Extracted Summary": "The trustees can distribute money from the trust to Jerry Simons and his descendants (children, grandchildren, etc.) in two ways:\r\nFor Basic Needs: The trustees can give them money for health, education, maintenance, and support to maintain their normal standard of living. All trustees can make these decisions.\r\nFor Any Purpose: The trustees can also give them money for any reason at all, but Jerry Simons cannot participate in these decisions if he's serving as a trustee (this prevents self-dealing).\r\nThe trustees have complete discretion over who gets money, when they get it, and how much they receive. They can explicitly prioritize Jerry Simons' needs over his descendants if they choose. Any income that isn't distributed stays in the trust and becomes part of the principal."
+      "Reasoning": "Break the complex distribution rules into separate paraphrased extractions. Each extraction covers a different aspect and references different supporting passages, enabling multiple citations in the final display.",
+      "Final Extracted Data": {
+        "distribution_provisions": [
+          "The trustees can distribute trust funds to Jerry Simons and his descendants for basic living needs.",
+          "Distributions cover health, education, maintenance, and support expenses.",
+          "The trustees also have authority to make distributions for any purpose whatsoever.",
+          "Jerry Simons cannot participate in discretionary distribution decisions when serving as trustee.",
+          "Undistributed income is added to the trust's principal each year.",
+          "The trustees may prioritize Jerry Simons' needs over his descendants' needs."
+        ]
+      }
     }
   },
   {
@@ -81,13 +90,22 @@
     }
   },
   {
-    "Instruction": "Summarize the purpose and how the trust works from the following text.",
+    "Instruction": "Summarize the purpose and how the trust works from the following text. Create multiple extraction entries per field to enable interpolated citations. Paraphrase - do not copy document text verbatim.",
     "Input": "JERRY SIMONS 2012 TRUST... This is a trust agreement... WHEREAS, the Settlor desires to create a trust... NOW, THEREFORE, the Settlor intends to transfer property to the Trustees, IN TRUST, and the Trustees agree to accept the property and to hold, manage and distribute the property under the terms of this Agreement.",
     "Output": {
-      "Reasoning": "The 'WHEREAS' clause states the Settlor's desire to 'create a trust', and the 'NOW, THEREFORE' clause explains that the Settlor will 'transfer property to the Trustees, IN TRUST,' and the Trustees will 'hold, manage, and distribute the property.' The purpose is the Settlor's intent to create a trust. The 'how' is the mechanism of the property transfer and subsequent management by the trustees.",
-      "Final Extracted Summary": {
-        "Purpose_and_Intent": "The purpose of the trust is for the Settlor to transfer property to the Trustees in order to create a trust. The Settlor's intent is to have the Trustees manage and distribute the property according to the terms of the agreement.",
-        "How_the_Trust_Works": "The trust is established by the Settlor transferring property to the Trustees, who then hold, manage, and distribute the property according to the rules set forth in the agreement."
+      "Reasoning": "Break down the summary into multiple short extractions that reference different supporting passages. This enables multiple citations to be interpolated in the final summary display. Each extraction should paraphrase rather than quote verbatim.",
+      "Final Extracted Data": {
+        "purpose_and_intent": [
+          "The settlor established this trust to transfer and manage property.",
+          "The trust ensures proper distribution of assets according to specific terms."
+        ],
+        "how_the_trust_works": [
+          "Carl Huntington serves as the settlor",
+          "who creates the trust arrangement",
+          "The trustees accept responsibility",
+          "for managing the transferred property",
+          "All property management follows the agreement's established rules"
+        ]
       }
     }
   },
@@ -145,13 +163,27 @@
     }
   },
   {
-    "Instruction": "Extract comprehensive trust information including how the trust works, its purpose, and trustee powers along with roles.",
+    "Instruction": "Extract comprehensive trust information including how the trust works, its purpose, and trustee powers. Create multiple extraction entries per field for interpolated citations. Paraphrase rather than quote.",
     "Input": "The purpose of this trust is to manage and distribute the Grantor's assets during lifetime and upon death, avoiding probate. The trust works as follows: The Grantor transfers property to the Trustee, who manages it according to these terms. The Grantor can revoke or amend the trust at any time. The Trustee has broad powers including the power to invest, sell, mortgage, and distribute property. Initial Trustee: John Smith. Successor Trustee: Jane Doe.",
     "Output": {
       "Final Extracted Data": {
-        "purpose_and_intent": "To manage and distribute the Grantor's assets during lifetime and upon death, avoiding probate",
-        "how_the_trust_works": "The Grantor transfers property to the Trustee, who manages it according to these terms. The Grantor can revoke or amend the trust at any time",
-        "trustee_powers": "The Trustee has broad powers including the power to invest, sell, mortgage, and distribute property",
+        "purpose_and_intent": [
+          "The trust manages the grantor's assets during their lifetime.",
+          "Asset distribution continues after the grantor's death.",
+          "The trust structure avoids probate proceedings."
+        ],
+        "how_the_trust_works": [
+          "The grantor transfers property to trustees",
+          "for management and distribution",
+          "All management follows the trust agreement's terms",
+          "The grantor retains authority",
+          "to modify or revoke the trust during their lifetime"
+        ],
+        "trustee_powers_and_duties": [
+          "Trustees have broad investment authority over trust assets.",
+          "The trustees can sell and mortgage trust property.",
+          "Distribution decisions are made by the trustees."
+        ],
         "initial_trustee": "John Smith",
         "successor_trustee": "Jane Doe"
       }
